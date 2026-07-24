@@ -27,4 +27,4 @@ public interface ProduitRepository extends JpaRepository<Produit, String> {
      * @return produits correspondants
      */
     List<Produit> findByNomContainingIgnoreCase(String mot);
-}
+    List<Produit> findByCategorieIgnoreCase(String categorie);}

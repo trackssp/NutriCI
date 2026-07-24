@@ -22,6 +22,17 @@ public class Produit {
     @Column(nullable = false, length = 100)
     private String nom;
 
+    @Column(nullable = false, length = 50)
+    private String categorie;
+
+    public String getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(String categorie) {
+        this.categorie = categorie;
+    }
+
     /** Prix unitaire en FCFA. */
     @Column(name = "prix_unitaire", nullable = false)
     private double prixUnitaire;
@@ -39,12 +50,15 @@ public class Produit {
      *
      * @param reference référence du produit
      * @param nom nom commercial
+     * @param categorie catégorie du produit
      * @param prixUnitaire prix en FCFA
      * @param qteStock quantité disponible
      */
-    public Produit(String reference, String nom, double prixUnitaire, int qteStock) {
+    public Produit(String reference, String nom, String categorie,
+                   double prixUnitaire, int qteStock) {
         this.reference = reference;
         this.nom = nom;
+        this.categorie = categorie;
         this.prixUnitaire = prixUnitaire;
         this.qteStock = qteStock;
     }
