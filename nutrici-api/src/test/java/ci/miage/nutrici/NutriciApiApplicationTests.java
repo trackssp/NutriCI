@@ -1,4 +1,4 @@
-package ci.miage.nutriciapi;
+package ci.miage.nutrici;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriCI - Catalogue</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f4;
+            color: #1f2937;
+        }
+
+        header {
+            background-color: #166534;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        #catalogue {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .produit {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .produit h2 {
+            margin-top:0;
+            color:#166534;
+        }
+
+        .prix {
+            font-size:1.2rem;
+            font-weight:bold;
+        }
+
+        button {
+            background:#166534;
+            color:white;
+            border:none;
+            padding:10px 15px;
+            border-radius:6px;
+            cursor:pointer;
+        }
+
+        button:hover {
+            background:#14532d;
+        }
+
+        #panier-section {
+            margin-top:40px;
+            background:white;
+            padding:25px;
+            border-radius:10px;
+            box-shadow:0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        input {
+            padding:10px;
+            margin:5px;
+            border-radius:5px;
+            border:1px solid #ccc;
+        }
+
+        .stock-bas {
+            color:#b91c1c;
+            font-weight:bold;
+        }
+
+        .erreur {
+            color:#b91c1c;
+            background:#fee2e2;
+            padding:15px;
+            border-radius:8px;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<header>
+    <h1>NutriCI</h1>
+    <p>Catalogue de compléments alimentaires</p>
+</header>
+
+
+<main>
+
+    <h2>Nos produits</h2>
+
+    <div id="catalogue">
+        <p>Chargement du catalogue...</p>
+    </div>
+
+
+    <!-- PANIER AJOUTÉ -->
+    <section id="panier-section">
+
+        <h2>Mon panier</h2>
+
+        <div id="panier">
+            Aucun produit dans le panier.
+        </div>
+
+        <p>
+            Total :
+            <strong id="total">0 FCFA</strong>
+        </p>
+
+
+        <h3>Informations client</h3>
+
+        <input
+                id="client"
+                placeholder="Nom du client">
+
+
+        <input
+                id="telephone"
+                placeholder="Téléphone Mobile Money">
+
+
+        <br><br>
+
+
+        <button onclick="validerCommande()">
+            Commander
+        </button>
+
+
+        <pre id="resultat-commande"></pre>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+
+    async function chargerProduits() {
+
+        const catalogue =
+            document.getElementById("catalogue");
+
+
+        try {
+
+            const reponse =
+                await fetch("/api/produits");
+
+
+            if(!reponse.ok){
+                throw new Error(
+                    "Erreur HTTP : " + reponse.status
+                );
+            }
+
+
+            const produits =
+                await reponse.json();
+
+
+
+            catalogue.innerHTML =
+            produits.map(produit => `
+
+                <article class="produit">
+
+                    <h2>${produit.nom}</h2>
+
+                    <p>
+                        Référence :
+                        ${produit.reference}
+                    </p>
+
+
+                    <p class="prix">
+                        ${produit.prixUnitaire
+                        .toLocaleString("fr-FR")}
+                        FCFA
+                    </p>
+
+
+                    <p>
+                        Stock disponible :
+                        ${produit.qteStock}
+                    </p>
+
+
+                    ${
+                        produit.stockBas
+                        ?
+                        '<p class="stock-bas">Stock faible</p>'
+                        :
+                        '<p>Produit disponible</p>'
+                    }
+
+
+                    <button
+                    onclick='ajouterAuPanier(${JSON.stringify(produit)})'>
+                        Ajouter au panier
+                    </button>
+
+
+                </article>
+
+
+            `).join("");
+
+
+
+        } catch(erreur){
+
+            catalogue.innerHTML =
+            `
+            <p class="erreur">
+            Impossible de charger le catalogue :
+            ${erreur.message}
+            </p>
+            `;
+
+        }
+
+    }
+
+
+
+
+
+    async function ajouterAuPanier(produit){
+
+
+        await fetch("/api/panier",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+
+            body:JSON.stringify({
+
+                reference:
+                produit.reference,
+
+                nom:
+                produit.nom,
+
+                prixUnitaire:
+                produit.prixUnitaire,
+
+                quantite:1
+
+            })
+
+        });
+
+
+        chargerPanier();
+
+    }
+
+
+
+
+
+    async function chargerPanier(){
+
+
+        const panier =
+        await fetch("/api/panier")
+        .then(r=>r.json());
+
+
+
+        const zone =
+        document.getElementById("panier");
+
+
+        if(panier.lignes.length===0){
+
+            zone.innerHTML =
+            "Aucun produit dans le panier.";
+
+        }
+        else{
+
+
+            zone.innerHTML =
+            panier.lignes.map(l=>`
+
+            <p>
+
+            ${l.nom}
+            x ${l.quantite}
+
+            =
+            ${l.sousTotal}
+            FCFA
+
+
+            <button
+            onclick="supprimerDuPanier('${l.reference}')">
+            Supprimer
+            </button>
+
+
+            </p>
+
+            `).join("");
+
+        }
+
+
+        document.getElementById("total")
+        .textContent =
+        panier.total + " FCFA";
+
+
+    }
+
+
+
+
+
+    async function supprimerDuPanier(reference){
+
+
+        await fetch(
+            "/api/panier/" + reference,
+            {
+                method:"DELETE"
+            }
+        );
+
+
+        chargerPanier();
+
+    }
+
+
+
+
+
+
+    async function validerCommande(){
+
+
+
+        const reponse =
+        await fetch("/api/commandes",{
+
+
+            method:"POST",
+
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+
+            body:JSON.stringify({
+
+                client:
+                document.getElementById("client").value,
+
+
+                telephone:
+                document.getElementById("telephone").value
+
+            })
+
+
+        });
+
+
+
+        if(!reponse.ok){
+
+            alert(
+            "Panier vide ou informations invalides"
+            );
+
+            return;
+
+        }
+
+
+
+        const commande =
+        await reponse.json();
+
+
+
+        await fetch(
+        "/api/commandes/"
+        + commande.numero
+        + "/paiement",
+        {
+            method:"POST"
+        });
+
+
+
+        const bon =
+        await fetch(
+        "/api/commandes/"
+        + commande.numero
+        + "/bon-livraison"
+        )
+        .then(r=>r.text());
+
+
+
+        document.getElementById(
+        "resultat-commande"
+        )
+        .textContent = bon;
+
+
+
+        chargerPanier();
+
+
+    }
+
+
+
+
+
+
+    chargerProduits();
+
+    chargerPanier();
+
+
+
+</script>
+
+
+</body>
+</html>

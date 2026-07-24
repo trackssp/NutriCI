@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/api/panier/VIT001"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+     "quantite":5
+    }
+order: 3000

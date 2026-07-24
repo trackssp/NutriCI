@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/api/produits/alertes"
+method: GET
+order: 3000
