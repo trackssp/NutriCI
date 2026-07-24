@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{base_url}}/api/produits/recherche?q=Vitamine"
+method: GET
+queryParams:
+  q: Vitamine
+order: 2000

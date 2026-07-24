@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: 1124608b-7bbe-4ee8-824e-673b0df0e599
+
+localResources:
+  collections:
+    - ../NutriCI_Global_Test.postman_collection.json
+
+cloudResources:
+  collections:
+    ../postman/collections/NutriCI - Test Global API: b1ab7e79-545b-4d42-8f8e-663024fab514

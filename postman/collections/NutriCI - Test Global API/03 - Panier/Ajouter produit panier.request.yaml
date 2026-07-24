@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/api/panier"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+     "reference":"VIT001",
+     "nom":"Vitamine C 1000mg",
+     "prixUnitaire":4500,
+     "quantite":2
+    }
+order: 2000

@@ -7,10 +7,16 @@ public class Panier {
 
     private final List<LignePanier> lignes = new ArrayList<>();
 
+
     public List<LignePanier> getLignes() {
         return lignes;
     }
 
+
+    /**
+     * Ajouter un produit au panier
+     * Si le produit existe déjà, on augmente la quantité
+     */
     public void ajouter(LignePanier nouvelle) {
 
         for (LignePanier ligne : lignes) {
@@ -28,6 +34,28 @@ public class Panier {
         lignes.add(nouvelle);
     }
 
+
+    /**
+     * Modifier la quantité d'un produit existant
+     */
+    public boolean modifierQuantite(String reference, int quantite) {
+
+        for (LignePanier ligne : lignes) {
+
+            if (ligne.getReference().equals(reference)) {
+
+                ligne.setQuantite(quantite);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Supprimer un produit du panier
+     */
     public void supprimer(String reference) {
 
         lignes.removeIf(
@@ -35,6 +63,10 @@ public class Panier {
         );
     }
 
+
+    /**
+     * Calculer le montant total du panier
+     */
     public double getTotal() {
 
         return lignes.stream()
@@ -42,6 +74,10 @@ public class Panier {
                 .sum();
     }
 
+
+    /**
+     * Vider le panier
+     */
     public void vider() {
 
         lignes.clear();
