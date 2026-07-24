@@ -1,4 +1,4 @@
-package ci.miage.nutriciapi;
+package ci.miage.nutrici;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
