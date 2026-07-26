@@ -359,3 +359,37 @@ Contributeurs :
 ## Remarque
 
 Le catalogue des produits est enregistré dans MySQL. Certaines données de démonstration, comme le contenu courant du panier ou certains favoris, peuvent être réinitialisées lorsque le serveur Railway redémarre.
+
+<!-- CAPTURES-NUTRICI-2026 -->
+## DÃ©monstration visuelle
+
+### Accueil
+![Page d'accueil NutriCI](documentation/images/accueil.png)
+
+### Catalogue connectÃ© Ã  l'API
+![Catalogue NutriCI](documentation/images/catalogue.png)
+
+### Authentification
+![Connexion NutriCI](documentation/images/connexion.png)
+
+### Panier
+![Panier NutriCI](documentation/images/panier.png)
+
+### Administration
+Le rÃ´le `ADMIN` dispose d'un espace exclusif permettant d'ajouter, modifier et supprimer les produits. Ces opÃ©rations sont Ã©galement protÃ©gÃ©es cÃ´tÃ© backend par le jeton administrateur. Le rÃ´le `CLIENT` peut consulter le catalogue et commander, mais ne peut pas administrer les produits.
+
+![Espace administrateur NutriCI](documentation/images/administration.png)
+
+### RÃ©ponse JSON de l'API REST
+![API REST des produits](documentation/images/api-produits.png)
+
+## DiffÃ©rence entre les rÃ´les
+
+| FonctionnalitÃ© | Client | Administrateur |
+|---|:---:|:---:|
+| Consulter et rechercher les produits | Oui | Oui |
+| Ajouter au panier et commander | Oui | Oui |
+| AccÃ©der au tableau de bord d'administration | Non | Oui |
+| Ajouter un produit | Non | Oui |
+| Modifier le prix, la catÃ©gorie ou le stock | Non | Oui |
+| Supprimer un produit | Non | Oui |

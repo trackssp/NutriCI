@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — NutriCI</title>
+    <style>
+        :root{--green:#073b2c;--green2:#0b5a3d;--gold:#d5aa20;--cream:#f4f7f0;--red:#b42318;--ink:#17342b}
+        *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,sans-serif}
+        header{background:linear-gradient(120deg,var(--green),var(--green2));color:white;padding:22px 5%;display:flex;align-items:center;justify-content:space-between}
+        header h1{margin:0;font-family:Georgia,serif;font-size:30px}header small{color:#dfc563}
+        nav{display:flex;gap:10px}.btn,button{border:0;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer}
+        .btn{color:var(--green);background:white;text-decoration:none}.gold{background:var(--gold);color:#092f25}
+        main{width:min(1220px,92%);margin:32px auto}.intro{display:flex;justify-content:space-between;gap:20px;align-items:end}
+        h2{font:700 38px Georgia,serif;margin:0 0 8px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:25px 0}
+        .stat,.panel{background:white;border-radius:20px;padding:22px;box-shadow:0 12px 30px #0b3c2c13}
+        .stat strong{display:block;font:700 34px Georgia,serif;color:#108a53}.stat span{color:#65736d}
+        .layout{display:grid;grid-template-columns:370px 1fr;gap:22px}.panel h3{margin-top:0;font:700 25px Georgia,serif}
+        label{display:block;font-weight:700;margin:14px 0 6px}input{width:100%;padding:12px;border:1px solid #ccd6d0;border-radius:10px;font-size:15px}
+        .actions{display:flex;gap:9px;margin-top:18px}.actions button{flex:1}.secondary{background:#e9eee9;color:var(--green)}
+        .search{margin-bottom:15px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px 9px;border-bottom:1px solid #e5ebe6}
+        th{font-size:12px;text-transform:uppercase;color:#718079}.badge{padding:5px 9px;border-radius:20px;background:#e4f5e9;color:#167044;font-weight:700;font-size:12px}
+        .low{background:#fee9e7;color:var(--red)}.mini{border-radius:9px;padding:7px 10px}.edit{background:#e6f0ea;color:var(--green)}.delete{background:#fee9e7;color:var(--red)}
+        #message{display:none;margin:0 0 18px;padding:13px;border-radius:10px;background:#e4f5e9;color:#11653d;font-weight:700}
+        #interdit{display:none;max-width:600px;margin:90px auto;text-align:center}.danger{background:#fee9e7!important;color:var(--red)!important}
+        @media(max-width:850px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.intro{display:block}header{align-items:flex-start;gap:15px;flex-direction:column}}
+    </style>
+</head>
+<body>
+<header>
+    <div><h1>NutriCI Administration</h1><small>Espace réservé au rôle ADMIN</small></div>
+    <nav><a class="btn" href="/">Voir la boutique</a><button class="gold" onclick="deconnexion()">Déconnexion</button></nav>
+</header>
+<section id="interdit" class="panel">
+    <h2>Accès interdit</h2>
+    <p>Cette page est réservée à l’administrateur. Un client ne peut ni ajouter, ni modifier, ni supprimer un produit.</p>
+    <a class="btn gold" href="/">Retour à l’accueil</a>
+</section>
+<main id="contenu">
+    <div class="intro"><div><h2>Gestion du catalogue</h2><p>Les changements sont enregistrés dans MySQL par l’API Spring Boot.</p></div><strong id="identite"></strong></div>
+    <div class="stats">
+        <div class="stat"><strong id="nbProduits">0</strong><span>produits au catalogue</span></div>
+        <div class="stat"><strong id="stockFaible">0</strong><span>produits en stock faible (&lt; 5)</span></div>
+        <div class="stat"><strong id="valeurStock">0 FCFA</strong><span>valeur totale du stock</span></div>
+    </div>
+    <div id="message"></div>
+    <div class="layout">
+        <section class="panel">
+            <h3 id="titreForm">Ajouter un produit</h3>
+            <form id="formProduit">
+                <label for="reference">Référence (6 caractères)</label><input id="reference" maxlength="6" required placeholder="VIT007">
+                <label for="nom">Nom</label><input id="nom" required placeholder="Vitamine K2">
+                <label for="categorie">Catégorie</label><input id="categorie" required placeholder="Vitamines">
+                <label for="prix">Prix unitaire (FCFA)</label><input id="prix" type="number" min="1" required>
+                <label for="stock">Quantité en stock</label><input id="stock" type="number" min="0" required>
+                <div class="actions"><button class="gold" type="submit" id="enregistrer">Ajouter</button><button class="secondary" type="button" onclick="annuler()">Annuler</button></div>
+            </form>
+        </section>
+        <section class="panel">
+            <h3>Produits enregistrés</h3>
+            <input class="search" id="recherche" placeholder="Rechercher par nom, référence ou catégorie…" oninput="afficher()">
+            <div class="table-wrap"><table><thead><tr><th>Référence</th><th>Produit</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="liste"></tbody></table></div>
+        </section>
+    </div>
+</main>
+<script>
+    const utilisateur=JSON.parse(sessionStorage.getItem("nutriciUtilisateur")||"null");
+    const autorise=utilisateur&&utilisateur.role==="ADMIN"&&utilisateur.token;
+    let produits=[],referenceModifiee=null;
+    if(!autorise){document.getElementById("contenu").style.display="none";document.getElementById("interdit").style.display="block"}
+    else{document.getElementById("identite").textContent="Connecté : "+(utilisateur.nom||utilisateur.email);charger()}
+    function entetes(){return{"Content-Type":"application/json","X-Auth-Token":utilisateur.token}}
+    async function charger(){
+        const r=await fetch("/api/produits");if(!r.ok)throw new Error("Chargement impossible");
+        produits=await r.json();actualiserStats();afficher();
+    }
+    function actualiserStats(){
+        nbProduits.textContent=produits.length;
+        stockFaible.textContent=produits.filter(p=>p.qteStock<5).length;
+        valeurStock.textContent=new Intl.NumberFormat("fr-FR").format(produits.reduce((s,p)=>s+p.prixUnitaire*p.qteStock,0))+" FCFA";
+    }
+    function afficher(){
+        const q=recherche.value.toLowerCase();
+        liste.innerHTML=produits.filter(p=>(p.reference+" "+p.nom+" "+p.categorie).toLowerCase().includes(q)).map(p=>`
+        <tr><td><strong>${ech(p.reference)}</strong></td><td>${ech(p.nom)}</td><td>${ech(p.categorie)}</td>
+        <td>${fmt(p.prixUnitaire)}</td><td><span class="badge ${p.qteStock<5?"low":""}">${p.qteStock}</span></td>
+        <td><button class="mini edit" onclick="modifier('${js(p.reference)}')">Modifier</button> <button class="mini delete" onclick="supprimer('${js(p.reference)}')">Supprimer</button></td></tr>`).join("");
+    }
+    formProduit.addEventListener("submit",async e=>{
+        e.preventDefault();
+        const produit={reference:reference.value.trim().toUpperCase(),nom:nom.value.trim(),categorie:categorie.value.trim(),prixUnitaire:Number(prix.value),qteStock:Number(stock.value)};
+        const modification=referenceModifiee!==null;
+        const r=await fetch(modification?"/api/produits/"+encodeURIComponent(referenceModifiee):"/api/produits",{method:modification?"PUT":"POST",headers:entetes(),body:JSON.stringify(produit)});
+        if(r.status===403)return notifier("Opération refusée : droits administrateur requis.",true);
+        if(!r.ok)return notifier("Données invalides ou référence déjà utilisée.",true);
+        notifier(modification?"Produit modifié avec succès.":"Produit ajouté avec succès.");annuler();await charger();
+    });
+    function modifier(ref){
+        const p=produits.find(x=>x.reference===ref);if(!p)return;
+        referenceModifiee=ref;reference.value=p.reference;reference.disabled=true;nom.value=p.nom;categorie.value=p.categorie;prix.value=p.prixUnitaire;stock.value=p.qteStock;
+        titreForm.textContent="Modifier "+p.reference;enregistrer.textContent="Enregistrer";scrollTo({top:300,behavior:"smooth"});
+    }
+    async function supprimer(ref){
+        if(!confirm("Supprimer définitivement le produit "+ref+" ?"))return;
+        const r=await fetch("/api/produits/"+encodeURIComponent(ref),{method:"DELETE",headers:entetes()});
+        if(r.status===403)return notifier("Suppression refusée : droits administrateur requis.",true);
+        if(!r.ok)return notifier("Suppression impossible.",true);
+        notifier("Produit "+ref+" supprimé.");await charger();
+    }
+    function annuler(){referenceModifiee=null;formProduit.reset();reference.disabled=false;titreForm.textContent="Ajouter un produit";enregistrer.textContent="Ajouter"}
+    function notifier(t,erreur=false){message.textContent=t;message.className=erreur?"danger":"";message.style.display="block";setTimeout(()=>message.style.display="none",4500)}
+    function deconnexion(){sessionStorage.removeItem("nutriciUtilisateur");location.href="/"}
+    function fmt(n){return new Intl.NumberFormat("fr-FR").format(n)+" FCFA"}
+    function ech(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+    function js(v){return String(v).replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
+</script>
+</body>
+</html>

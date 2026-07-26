@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -1964,6 +1964,25 @@ function lancerConfettis(){
     setTimeout(() => piece.remove(), 4000);
   }
 }
+</script>
+<!-- ADMIN-NUTRICI -->
+<style>
+  #acces-admin-nutrici{display:none;position:fixed;right:24px;bottom:92px;z-index:9000;background:#d5aa20;color:#073b2c;text-decoration:none;padding:13px 19px;border-radius:999px;font:700 14px Arial,sans-serif;box-shadow:0 10px 30px #073b2c55}
+  #acces-admin-nutrici:hover{transform:translateY(-2px)}
+</style>
+<a id="acces-admin-nutrici" href="/admin.html">âš™ Administration</a>
+<script>
+  (function(){
+    function afficherAccesAdmin(){
+      var u=null;
+      try{u=JSON.parse(sessionStorage.getItem("nutriciUtilisateur")||"null")}catch(e){}
+      var bouton=document.getElementById("acces-admin-nutrici");
+      if(bouton)bouton.style.display=u&&u.role==="ADMIN"?"block":"none";
+    }
+    afficherAccesAdmin();
+    window.addEventListener("storage",afficherAccesAdmin);
+    setInterval(afficherAccesAdmin,500);
+  })();
 </script>
 </body>
 </html>
