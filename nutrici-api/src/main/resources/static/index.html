@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -689,10 +689,6 @@ nav.links a.active::after,nav.links a:hover::after{transform:scaleX(1);}
         </div>
         <img src="https://images.unsplash.com/photo-1584362917165-526a968579e8?auto=format&fit=crop&w=900&q=80" alt="Compléments alimentaires et vitamines NutriCI" loading="lazy" onerror="this.style.display='none'">
       </div>
-      <div class="seal">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-        <span>Qualité contrôlée</span>
-      </div>
     </div>
   </div>
 </section>
@@ -1063,24 +1059,75 @@ let commandes = [];          // historique renvoyé par /api/commandes
 let utilisateurCourant = JSON.parse(sessionStorage.getItem("nutriciUtilisateur") || "null");
 
 const imagesParDefaut = [
-  "https://images.unsplash.com/photo-1550572017-edd951aa8ca4?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80"
+  "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=700&h=480&q=82",
+  "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?auto=format&fit=crop&w=700&h=480&q=82",
+  "https://images.unsplash.com/photo-1550572017-edd951aa8ca4?auto=format&fit=crop&w=700&h=480&q=82",
+  "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&h=480&q=82",
+  "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=700&h=480&q=82",
+  "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=700&h=480&q=82"
 ];
 
 const imagesParCategorie = {
-  "Vitamines": "https://images.unsplash.com/photo-1550572017-edd951aa8ca4?auto=format&fit=crop&w=600&q=80",
-  "Acides gras": "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2c?auto=format&fit=crop&w=600&q=80",
-  "Minéraux": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80",
-  "Protéines": "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=600&q=80",
-  "Plantes": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80",
-  "Digestion": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80",
-  "Énergie": "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=600&q=80",
-  "Sommeil": "https://images.unsplash.com/photo-1511295742362-92c96b1cf484?auto=format&fit=crop&w=600&q=80",
-  "Immunité": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
-  "Beauté": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=600&q=80"
+  "Vitamines": [
+    "https://images.unsplash.com/photo-1550572017-edd951aa8ca4?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "Acides gras": [
+    "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "MinÃ©raux": [
+    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1580281658628-5260e3a5e334?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "ProtÃ©ines": [
+    "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1526401485004-2aa7dca96d4b?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "Plantes": [
+    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1531058240690-006c446962d8?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "Digestion": [
+    "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "Ã‰nergie": [
+    "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "Sommeil": [
+    "https://images.unsplash.com/photo-1511295742362-92c96b1cf484?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1455642305367-68834a9d4eaa?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1515894347712-4d9164b20b7a?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "ImmunitÃ©": [
+    "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1584362917165-526a968579e8?auto=format&fit=crop&w=700&h=480&q=82"
+  ],
+  "BeautÃ©": [
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=700&h=480&q=82",
+    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=700&h=480&q=82"
+  ]
 };
 
 function iconeLeaf(){
@@ -1201,10 +1248,20 @@ function activerEffetTilt(){
   });
 }
 
+function indexStableProduit(produit){
+  const texte = String(produit.reference || produit.nom || "");
+  let total = 0;
+  for (let i = 0; i < texte.length; i++) total = (total * 31 + texte.charCodeAt(i)) >>> 0;
+  return total;
+}
+
 function imagePourProduit(produit, index){
-  return produit.image
-    ? produit.image
-    : (imagesParCategorie[produit.categorie] || imagesParDefaut[index % imagesParDefaut.length]);
+  if (produit.image) return produit.image;
+  const choixCategorie = imagesParCategorie[produit.categorie];
+  const choix = Array.isArray(choixCategorie) && choixCategorie.length
+    ? choixCategorie
+    : imagesParDefaut;
+  return choix[indexStableProduit(produit) % choix.length];
 }
 
 function carteProduitHTML(produit, index){
@@ -1910,3 +1967,4 @@ function lancerConfettis(){
 </script>
 </body>
 </html>
+
