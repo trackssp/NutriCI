@@ -1,464 +1,1912 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriCI - Catalogue</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriCI — Nutrition &amp; Compléments Alimentaires</title>
+<meta name="description" content="NutriCI, compléments alimentaires de qualité contrôlée en Côte d'Ivoire.">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f4;
-            color: #1f2937;
-        }
+<!-- Polices Google Fonts : Fraunces (titres), Work Sans (texte), Space Mono (données/références) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-        header {
-            background-color: #166534;
-            color: white;
-            padding: 24px;
-            text-align: center;
-        }
+<style>
+/* ==========================================================================
+   1. VARIABLES & RESET
+   ========================================================================== */
+:root{
+  --forest:#0F3D2E;
+  --forest-deep:#0A2A20;
+  --emerald:#12864F;
+  --emerald-light:#1FA968;
+  --cream:#FAF7EF;
+  --cream-dark:#F1ECDF;
+  --gold:#C9A227;
+  --gold-soft:#E7CD7A;
+  --ink:#1C2B24;
+  --ink-soft:#4B5A52;
+  --sage:#EAF1E9;
+  --danger:#B91C1C;
+  --white:#FFFFFF;
+  --shadow-sm:0 2px 10px rgba(15,61,46,0.08);
+  --shadow-md:0 12px 32px rgba(15,61,46,0.14);
+  --shadow-lg:0 24px 60px rgba(15,61,46,0.20);
+  --radius-s:10px;
+  --radius-m:16px;
+  --radius-l:26px;
+  --nav-h:76px;
+}
 
-        main {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Work Sans', Arial, sans-serif;
+  background-color:var(--cream);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{
+  font-family:'Fraunces', Georgia, serif;
+  color:var(--forest);
+  margin:0 0 .5em;
+  line-height:1.15;
+  letter-spacing:-0.01em;
+}
+p{margin:0 0 1em;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+img{max-width:100%;display:block;}
+ul{list-style:none;margin:0;padding:0;}
+section{scroll-margin-top:var(--nav-h);}
+.mono{font-family:'Space Mono', monospace;}
+.container{max-width:1180px;margin:0 auto;padding:0 24px;}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
 
-        #catalogue {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 20px;
-        }
+/* apparitions progressives au défilement */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none;}
+  html{scroll-behavior:auto;}
+}
 
-        .produit {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-        }
+/* boutons */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  padding:14px 26px;border-radius:999px;border:2px solid transparent;
+  font-weight:600;font-size:.95rem;transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  white-space:nowrap;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--gold);color:var(--forest-deep);box-shadow:var(--shadow-sm);}
+.btn-primary:hover{background:var(--gold-soft);box-shadow:var(--shadow-md);}
+.btn-outline{background:transparent;border-color:rgba(255,255,255,.6);color:var(--white);}
+.btn-outline:hover{background:rgba(255,255,255,.12);}
+.btn-outline-dark{background:transparent;border-color:var(--forest);color:var(--forest);}
+.btn-outline-dark:hover{background:var(--sage);}
+.btn-emerald{background:var(--emerald);color:var(--white);}
+.btn-emerald:hover{background:var(--emerald-light);}
+.btn-ghost{background:transparent;border:none;color:var(--forest);padding:8px 10px;}
+.btn-sm{padding:9px 16px;font-size:.85rem;}
+.btn-block{width:100%;}
+.icon{width:20px;height:20px;flex-shrink:0;}
+.icon-sm{width:16px;height:16px;}
 
-        .produit h2 {
-            margin-top:0;
-            color:#166534;
-        }
+/* ==========================================================================
+   2. NAVIGATION
+   ========================================================================== */
+header.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--nav-h);
+  background:rgba(10,42,32,.92);
+  backdrop-filter:blur(10px);
+  box-shadow:0 4px 20px rgba(0,0,0,.15);
+}
+.nav-inner{
+  max-width:1180px;margin:0 auto;padding:0 24px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.logo{display:flex;align-items:center;gap:10px;color:var(--white);}
+.logo strong{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;letter-spacing:.02em;}
+.logo .icon{width:30px;height:30px;color:var(--gold);}
+nav.links{display:flex;align-items:center;gap:6px;}
+nav.links a{
+  color:rgba(255,255,255,.82);font-weight:500;font-size:.92rem;
+  padding:10px 14px;border-radius:999px;transition:background .2s, color .2s;
+}
+nav.links a:hover{background:rgba(255,255,255,.1);color:var(--white);}
+.nav-actions{display:flex;align-items:center;gap:10px;}
+.icon-btn{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);color:var(--white);transition:background .2s;
+}
+.icon-btn:hover{background:rgba(255,255,255,.18);}
+.badge{
+  position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;padding:0 4px;
+  background:var(--gold);color:var(--forest-deep);border-radius:999px;
+  font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;
+}
+.burger{display:none;background:none;border:none;color:var(--white);}
+@media (max-width:900px){
+  nav.links{position:fixed;top:var(--nav-h);left:0;right:0;background:var(--forest-deep);
+    flex-direction:column;align-items:stretch;padding:10px;gap:2px;
+    transform:translateY(-8px);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;}
+  nav.links.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+  nav.links a{padding:14px 16px;}
+  .burger{display:flex;}
+}
 
-        .prix {
-            font-size:1.2rem;
-            font-weight:bold;
-        }
+/* ==========================================================================
+   3. HERO
+   ========================================================================== */
+.hero{
+  padding:calc(var(--nav-h) + 64px) 0 80px;
+  background:
+    radial-gradient(1100px 600px at 85% -10%, rgba(201,162,39,.18), transparent 60%),
+    linear-gradient(160deg, var(--forest-deep) 0%, var(--forest) 55%, #135B41 100%);
+  color:var(--white);
+  position:relative;overflow:hidden;
+}
+.hero-inner{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;
+  max-width:1180px;margin:0 auto;padding:0 24px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;color:var(--gold-soft);
+  font-weight:600;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.hero h1{color:var(--white);font-size:clamp(2.2rem, 4.4vw, 3.4rem);font-weight:600;max-width:14ch;}
+.hero p.lead{color:rgba(255,255,255,.82);font-size:1.08rem;max-width:46ch;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin:28px 0 40px;}
+.trust-row{display:flex;gap:32px;flex-wrap:wrap;}
+.trust-item strong{display:block;font-family:'Fraunces',serif;font-size:1.6rem;color:var(--gold-soft);}
+.trust-item span{font-size:.82rem;color:rgba(255,255,255,.7);}
 
-        button {
-            background:#166534;
-            color:white;
-            border:none;
-            padding:10px 15px;
-            border-radius:6px;
-            cursor:pointer;
-        }
+.hero-visual{position:relative;}
+.hero-media{
+  position:relative;border-radius:var(--radius-l);overflow:hidden;
+  aspect-ratio:4/4.6;box-shadow:var(--shadow-lg);
+  border:1px solid rgba(255,255,255,.12);
+}
+.hero-media .media-fallback{
+  background:linear-gradient(135deg, var(--emerald) 0%, var(--forest-deep) 100%);
+}
+.seal{
+  position:absolute;bottom:-26px;left:-26px;width:112px;height:112px;
+  background:var(--cream);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  box-shadow:var(--shadow-lg);border:3px solid var(--gold);
+  text-align:center;
+}
+.seal .icon{width:26px;height:26px;color:var(--emerald);}
+.seal span{font-size:.58rem;font-weight:700;color:var(--forest);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;line-height:1.2;padding:0 6px;}
+@media (max-width:900px){
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-visual{order:-1;max-width:340px;margin:0 auto;}
+}
 
-        button:hover {
-            background:#14532d;
-        }
+/* media / image + fallback pattern, reused across the site */
+.media{position:relative;width:100%;height:100%;overflow:hidden;background:var(--sage);}
+.media .media-fallback{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg, var(--sage), var(--cream-dark));
+}
+.media .media-fallback .icon{width:44px;height:44px;color:var(--emerald);opacity:.55;}
+.media img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
 
-        #panier-section {
-            margin-top:40px;
-            background:white;
-            padding:25px;
-            border-radius:10px;
-            box-shadow:0 3px 12px rgba(0,0,0,0.1);
-        }
+/* ==========================================================================
+   4. AVANTAGES
+   ========================================================================== */
+.advantages{padding:76px 0;background:var(--cream);}
+.section-head{max-width:640px;margin:0 auto 44px;text-align:center;}
+.section-head .eyebrow{color:var(--emerald);justify-content:center;}
+.section-head h2{font-size:clamp(1.7rem,3vw,2.3rem);}
+.section-head p{color:var(--ink-soft);}
+.adv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+.adv-card{
+  background:var(--white);border-radius:var(--radius-m);padding:30px 24px;
+  box-shadow:var(--shadow-sm);border:1px solid rgba(15,61,46,.06);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.adv-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);}
+.adv-icon{
+  width:52px;height:52px;border-radius:14px;background:var(--sage);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--emerald);
+}
+.adv-card h3{font-size:1.05rem;color:var(--forest);}
+.adv-card p{color:var(--ink-soft);font-size:.92rem;margin:0;}
+@media (max-width:900px){.adv-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:560px){.adv-grid{grid-template-columns:1fr;}}
 
-        input {
-            padding:10px;
-            margin:5px;
-            border-radius:5px;
-            border:1px solid #ccc;
-        }
+/* ==========================================================================
+   5. CATALOGUE
+   ========================================================================== */
+.catalogue-section{padding:76px 0 90px;background:var(--sage);}
+.filters{
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  background:var(--white);padding:16px;border-radius:var(--radius-m);box-shadow:var(--shadow-sm);
+  margin-bottom:34px;
+}
+.search-box{
+  flex:1 1 280px;display:flex;align-items:center;gap:10px;
+  background:var(--cream);border-radius:999px;padding:11px 18px;border:1px solid rgba(15,61,46,.08);
+}
+.search-box .icon{color:var(--ink-soft);}
+.search-box input{flex:1;border:none;background:transparent;font:inherit;color:var(--ink);outline:none;}
+.filter-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.select-wrap select{
+  padding:11px 16px;border-radius:999px;border:1px solid rgba(15,61,46,.15);
+  background:var(--white);font:inherit;color:var(--ink);
+}
+.checkbox-wrap{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--ink-soft);}
+.checkbox-wrap input{width:17px;height:17px;accent-color:var(--emerald);}
 
-        .stock-bas {
-            color:#b91c1c;
-            font-weight:bold;
-        }
+#catalogue{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:24px;
+}
+.produit{
+  background:var(--white);border-radius:var(--radius-m);overflow:hidden;
+  box-shadow:var(--shadow-sm);border:1px solid rgba(15,61,46,.06);
+  display:flex;flex-direction:column;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.produit:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);}
+.produit:hover .media img{transform:scale(1.06);}
+.produit .media{aspect-ratio:4/3;}
+.produit-fav{
+  position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;
+  border:none;color:var(--ink-soft);box-shadow:var(--shadow-sm);transition:color .2s, transform .2s;
+}
+.produit-fav.active{color:#c0356b;}
+.produit-fav:hover{transform:scale(1.08);}
+.produit-media-wrap{position:relative;}
+.produit-cat{
+  position:absolute;bottom:12px;left:12px;z-index:2;background:rgba(10,42,32,.82);color:var(--gold-soft);
+  font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  padding:6px 12px;border-radius:999px;
+}
+.produit-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.produit-body h3{font-size:1.12rem;margin:0;color:var(--forest);}
+.produit-ref{color:var(--ink-soft);font-size:.78rem;}
+.produit-prix{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:600;color:var(--emerald);margin:2px 0;}
+.stock-row{display:flex;align-items:center;gap:8px;font-size:.85rem;}
+.stock-pill{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:.76rem;font-weight:600;
+}
+.stock-pill.ok{background:#E4F5EA;color:#166534;}
+.stock-pill.bas{background:#FDE8E8;color:var(--danger);}
+.stock-pill.rupture{background:#F1F1F1;color:#6b7280;}
+.produit-actions{display:flex;gap:8px;margin-top:auto;padding-top:12px;}
+.produit-actions .btn{flex:1;}
+.produit-actions .btn-icon-only{flex:0 0 auto;width:44px;padding:0;}
 
-        .erreur {
-            color:#b91c1c;
-            background:#fee2e2;
-            padding:15px;
-            border-radius:8px;
-        }
+.state-msg{
+  grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--ink-soft);
+}
+.state-msg .icon{width:46px;height:46px;color:var(--emerald);opacity:.5;margin:0 auto 14px;}
+.state-msg.erreur{color:var(--danger);}
+.state-msg.erreur .icon{color:var(--danger);}
+.skeleton{
+  border-radius:var(--radius-m);background:linear-gradient(100deg,#e9efe6 30%,#f6f8f3 45%,#e9efe6 60%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite;height:340px;
+}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 
-    </style>
+/* ==========================================================================
+   6. PROMOTIONS / CONSEILS / AVIS
+   ========================================================================== */
+.demo-tag{
+  display:inline-block;margin-left:8px;font-size:.66rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-soft);background:var(--cream-dark);padding:3px 8px;border-radius:6px;
+  vertical-align:middle;
+}
+.promos-section{padding:76px 0;background:var(--cream);}
+.promo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.promo-card{
+  position:relative;border-radius:var(--radius-m);padding:26px;color:var(--white);overflow:hidden;
+  min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(155deg,var(--forest) 0%, var(--emerald) 130%);
+}
+.promo-card:nth-child(2){background:linear-gradient(155deg,#8a5b12 0%, var(--gold) 130%);}
+.promo-card:nth-child(3){background:linear-gradient(155deg,#0c3a3a 0%, #1b6b63 130%);}
+.promo-ribbon{
+  position:absolute;top:16px;left:16px;background:rgba(255,255,255,.18);
+  padding:5px 12px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+}
+.promo-card h3{color:var(--white);font-size:1.2rem;}
+.promo-card p{color:rgba(255,255,255,.85);font-size:.88rem;margin:0;}
+@media (max-width:900px){.promo-grid{grid-template-columns:1fr;}}
+
+.tips-section{padding:76px 0;background:var(--sage);}
+.tips-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.tip-card{background:var(--white);border-radius:var(--radius-m);padding:24px;box-shadow:var(--shadow-sm);}
+.tip-card .adv-icon{background:var(--cream-dark);}
+.tip-card h4{font-size:1rem;color:var(--forest);margin:0 0 6px;}
+.tip-card p{font-size:.87rem;color:var(--ink-soft);margin:0;}
+@media (max-width:900px){.tips-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:560px){.tips-grid{grid-template-columns:1fr;}}
+
+.reviews-section{padding:76px 0 90px;background:var(--cream);}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.review-card{background:var(--white);border-radius:var(--radius-m);padding:26px;box-shadow:var(--shadow-sm);border:1px solid rgba(15,61,46,.06);}
+.stars{display:flex;gap:3px;color:var(--gold);margin-bottom:12px;}
+.stars .icon{width:16px;height:16px;}
+.review-card p.quote{font-style:italic;color:var(--ink);}
+.review-author{display:flex;align-items:center;gap:10px;margin-top:14px;}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:var(--emerald);font-weight:700;font-family:'Fraunces',serif;}
+.review-author strong{display:block;font-size:.9rem;color:var(--forest);}
+.review-author span{font-size:.78rem;color:var(--ink-soft);}
+@media (max-width:900px){.reviews-grid{grid-template-columns:1fr;}}
+
+/* ==========================================================================
+   7. FOOTER
+   ========================================================================== */
+footer{background:var(--forest-deep);color:rgba(255,255,255,.78);padding:64px 0 28px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;gap:40px;margin-bottom:44px;}
+.footer-grid h4{color:var(--white);font-size:.92rem;letter-spacing:.04em;text-transform:uppercase;font-family:'Work Sans';font-weight:700;margin-bottom:16px;}
+.footer-grid p{font-size:.88rem;color:rgba(255,255,255,.65);}
+.footer-links li{margin-bottom:10px;}
+.footer-links a{font-size:.88rem;color:rgba(255,255,255,.72);transition:color .2s;}
+.footer-links a:hover{color:var(--gold-soft);}
+.footer-contact li{font-size:.88rem;margin-bottom:10px;color:rgba(255,255,255,.72);display:flex;gap:8px;}
+.social-row{display:flex;gap:10px;margin-top:16px;}
+.social-row a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.social-row a:hover{background:var(--gold);color:var(--forest-deep);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.8rem;color:rgba(255,255,255,.55);}
+@media (max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:560px){.footer-grid{grid-template-columns:1fr;}}
+
+/* ==========================================================================
+   8. PANIER (drawer), FAVORIS (drawer), MODALES, TOASTS
+   ========================================================================== */
+.overlay{
+  position:fixed;inset:0;background:rgba(10,26,20,.55);z-index:300;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.overlay.open{opacity:1;pointer-events:auto;}
+
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:var(--cream);
+  z-index:301;box-shadow:-16px 0 40px rgba(0,0,0,.2);
+  transform:translateX(100%);transition:transform .3s ease;
+  display:flex;flex-direction:column;
+}
+.drawer.open{transform:translateX(0);}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;padding:22px 24px;
+  border-bottom:1px solid rgba(15,61,46,.1);background:var(--white);
+}
+.drawer-head h3{margin:0;font-size:1.2rem;}
+.drawer-body{flex:1;overflow-y:auto;padding:20px 24px;}
+.drawer-foot{padding:20px 24px;border-top:1px solid rgba(15,61,46,.1);background:var(--white);}
+.close-btn{
+  width:36px;height:36px;border-radius:50%;border:none;background:var(--sage);
+  display:flex;align-items:center;justify-content:center;color:var(--forest);
+}
+
+.cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(15,61,46,.08);}
+.cart-item .media{width:64px;height:64px;border-radius:10px;flex-shrink:0;}
+.cart-item-info{flex:1;}
+.cart-item-info h4{margin:0 0 2px;font-size:.95rem;color:var(--forest);}
+.cart-item-info .mono{font-size:.72rem;color:var(--ink-soft);}
+.qty-row{display:flex;align-items:center;gap:10px;margin-top:6px;}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid rgba(15,61,46,.2);background:var(--white);display:flex;align-items:center;justify-content:center;}
+.qty-val{font-weight:600;min-width:18px;text-align:center;}
+.remove-link{font-size:.78rem;color:var(--danger);margin-left:auto;background:none;border:none;text-decoration:underline;}
+.cart-item-price{font-weight:700;color:var(--emerald);white-space:nowrap;}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:.92rem;color:var(--ink-soft);}
+.summary-row.total{font-size:1.15rem;font-weight:700;color:var(--forest);margin-top:12px;}
+
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(10,26,20,.6);z-index:310;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;padding:20px;
+}
+.modal-backdrop.open{opacity:1;pointer-events:auto;}
+.modal{
+  background:var(--white);border-radius:var(--radius-l);max-width:460px;width:100%;
+  box-shadow:var(--shadow-lg);transform:translateY(18px) scale(.98);transition:transform .25s ease;
+  max-height:88vh;overflow-y:auto;
+}
+.modal-backdrop.open .modal{transform:translateY(0) scale(1);}
+.modal.modal-wide{max-width:760px;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:22px 26px;border-bottom:1px solid rgba(15,61,46,.08);}
+.modal-header h3{margin:0;}
+.modal-body{padding:26px;}
+.tabs{display:flex;gap:6px;background:var(--sage);border-radius:999px;padding:4px;margin-bottom:22px;}
+.tab-btn{flex:1;padding:9px;border:none;background:none;border-radius:999px;font-weight:600;color:var(--ink-soft);font-size:.88rem;}
+.tab-btn.active{background:var(--white);color:var(--forest);box-shadow:var(--shadow-sm);}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--forest);margin-bottom:6px;}
+.form-group input,.form-group select{
+  width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(15,61,46,.18);font:inherit;background:var(--cream);
+}
+.form-group input:focus,.form-group select:focus,button:focus-visible,a:focus-visible,input:focus-visible{
+  outline:3px solid var(--gold-soft);outline-offset:2px;
+}
+.form-hint{font-size:.76rem;color:var(--ink-soft);margin-top:14px;text-align:center;}
+
+.product-detail{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+.product-detail .media{aspect-ratio:1/1;border-radius:var(--radius-m);}
+@media (max-width:600px){.product-detail{grid-template-columns:1fr;}}
+
+.order-card{border:1px solid rgba(15,61,46,.1);border-radius:var(--radius-m);padding:16px 18px;margin-bottom:14px;}
+.order-card-head{display:flex;justify-content:space-between;font-size:.85rem;color:var(--ink-soft);margin-bottom:8px;}
+.order-card-head strong{color:var(--forest);}
+
+#toast-container{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:400;
+  display:flex;flex-direction:column;gap:10px;align-items:center;width:min(360px,90vw);
+}
+.toast{
+  background:var(--forest-deep);color:var(--white);padding:14px 20px;border-radius:12px;
+  box-shadow:var(--shadow-md);font-size:.88rem;display:flex;align-items:center;gap:10px;
+  opacity:0;transform:translateY(10px);transition:opacity .25s ease, transform .25s ease;width:100%;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast .icon{color:var(--gold-soft);flex-shrink:0;}
+
+/* ==========================================================================
+   9. PRÉCHARGEUR
+   ========================================================================== */
+#preloader{
+  position:fixed;inset:0;z-index:999;background:var(--forest-deep);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  transition:opacity .6s ease, visibility .6s ease;
+}
+#preloader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.preloader-leaf{width:56px;height:56px;color:var(--gold-soft);animation:leafPulse 1.4s ease-in-out infinite;}
+@keyframes leafPulse{0%,100%{transform:scale(1);opacity:.85;}50%{transform:scale(1.15);opacity:1;}}
+.preloader-bar{width:160px;height:3px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;}
+.preloader-bar::after{
+  content:"";display:block;width:40%;height:100%;background:var(--gold);
+  animation:preloaderSlide 1.1s ease-in-out infinite;
+}
+@keyframes preloaderSlide{0%{transform:translateX(-100%);}100%{transform:translateX(350%);}}
+.preloader-text{color:rgba(255,255,255,.6);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;}
+
+/* ==========================================================================
+   10. BARRE DE PROGRESSION DE DÉFILEMENT
+   ========================================================================== */
+#scroll-progress{
+  position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--emerald-light));
+  width:0%;z-index:250;transition:width .1s linear;
+}
+
+/* Navbar : état "scrolled" */
+header.nav{transition:height .3s ease, background .3s ease, box-shadow .3s ease;}
+header.nav.scrolled{height:64px;background:rgba(8,32,24,.97);box-shadow:0 8px 26px rgba(0,0,0,.22);}
+nav.links a{position:relative;}
+nav.links a::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:6px;height:2px;background:var(--gold);
+  transform:scaleX(0);transform-origin:left;transition:transform .25s ease;
+}
+nav.links a.active::after,nav.links a:hover::after{transform:scaleX(1);}
+
+/* ==========================================================================
+   11. FORMES FLOTTANTES DÉCORATIVES (HERO)
+   ========================================================================== */
+.hero{isolation:isolate;}
+.hero-blobs{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;}
+.blob-1{width:420px;height:420px;background:var(--emerald-light);top:-140px;right:-100px;animation:floatSlow 12s ease-in-out infinite;}
+.blob-2{width:300px;height:300px;background:var(--gold);bottom:-120px;left:-80px;animation:floatSlow 15s ease-in-out infinite reverse;}
+@keyframes floatSlow{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-25px) scale(1.08);}}
+.hero-inner,.hero .container{position:relative;z-index:1;}
+.hero-visual{animation:heroFloat 5s ease-in-out infinite;}
+@keyframes heroFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.seal{animation:sealSpin 20s linear infinite;}
+@keyframes sealSpin{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
+.seal .icon,.seal span{animation:sealCounterSpin 20s linear infinite;}
+@keyframes sealCounterSpin{0%{transform:rotate(0);}100%{transform:rotate(-360deg);}}
+
+/* révélations en cascade */
+.reveal{transition-delay:var(--delay,0s);}
+.reveal-up{opacity:0;transform:translateY(28px);transition:opacity .7s ease var(--delay,0s), transform .7s ease var(--delay,0s);}
+.reveal-up.visible{opacity:1;transform:translateY(0);}
+
+/* compteurs animés */
+.trust-item strong{font-variant-numeric:tabular-nums;}
+
+/* ==========================================================================
+   12. EFFET TILT 3D SUR LES CARTES PRODUITS
+   ========================================================================== */
+.produit{
+  transform-style:preserve-3d;will-change:transform;
+  transition:transform .15s ease-out, box-shadow .25s ease;
+}
+.produit-fav{transition:color .2s, transform .2s;}
+.produit-fav.pulse{animation:favPulse .4s ease;}
+@keyframes favPulse{0%{transform:scale(1);}50%{transform:scale(1.35);}100%{transform:scale(1);}}
+.produit .btn-emerald.added{animation:addedPulse .35s ease;}
+@keyframes addedPulse{0%{transform:scale(1);}50%{transform:scale(.94);}100%{transform:scale(1);}}
+
+/* icône volante panier */
+.fly-icon{
+  position:fixed;z-index:500;pointer-events:none;border-radius:50%;
+  box-shadow:var(--shadow-md);background:var(--white);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  transition:transform .7s cubic-bezier(.35,0,.25,1), opacity .7s ease, width .7s ease, height .7s ease;
+}
+
+/* shine sweep sur les promos */
+.promo-card{position:relative;}
+.promo-card::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.22) 40%,transparent 60%);
+  transform:translateX(-120%);transition:transform .8s ease;
+}
+.promo-card:hover::before{transform:translateX(120%);}
+.promo-card{transition:transform .3s ease, box-shadow .3s ease;}
+.promo-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+
+/* ==========================================================================
+   13. CARROUSEL D'AVIS
+   ========================================================================== */
+.reviews-carousel{position:relative;overflow:hidden;}
+.reviews-track{display:flex;transition:transform .55s cubic-bezier(.35,0,.25,1);}
+.reviews-track .review-card{flex:0 0 100%;margin:0 auto;max-width:640px;}
+.reviews-dots{display:flex;justify-content:center;gap:8px;margin-top:26px;}
+.reviews-dots button{
+  width:9px;height:9px;border-radius:50%;border:none;background:rgba(15,61,46,.22);padding:0;transition:background .25s, transform .25s;
+}
+.reviews-dots button.active{background:var(--emerald);transform:scale(1.3);}
+@media (min-width:901px){
+  .reviews-track .review-card{flex:0 0 100%;}
+}
+
+/* ==========================================================================
+   14. BOUTON RETOUR EN HAUT
+   ========================================================================== */
+#back-to-top{
+  position:fixed;bottom:26px;right:26px;z-index:150;width:48px;height:48px;border-radius:50%;
+  background:var(--forest-deep);color:var(--white);border:none;box-shadow:var(--shadow-md);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(14px) scale(.9);pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease, background .2s ease;
+}
+#back-to-top.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+#back-to-top:hover{background:var(--emerald);}
+
+/* ==========================================================================
+   15. CONFETTIS DE CONFIRMATION
+   ========================================================================== */
+#confetti-layer{position:fixed;inset:0;z-index:450;pointer-events:none;overflow:hidden;}
+.confetti-piece{
+  position:absolute;top:-12px;border-radius:2px;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(105vh) rotate(600deg);opacity:.9;}
+}
+
+/* animation d'entrée des articles du panier */
+.cart-item{animation:cartItemIn .35s ease;}
+@keyframes cartItemIn{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
+
+/* boutons filtre catégorie sous forme de puces animées */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{
+  padding:9px 16px;border-radius:999px;border:1px solid rgba(15,61,46,.18);background:var(--white);
+  font-size:.85rem;font-weight:600;color:var(--ink-soft);transition:all .2s ease;
+}
+.chip:hover{border-color:var(--emerald);color:var(--emerald);}
+.chip.active{background:var(--forest);border-color:var(--forest);color:var(--white);}
+
+@media (prefers-reduced-motion: reduce){
+  .blob,.hero-visual,.seal,.seal .icon,.seal span,.preloader-leaf,.preloader-bar::after{animation:none !important;}
+}
+</style>
 </head>
-
 
 <body>
 
-<header>
-    <h1>NutriCI</h1>
-    <p>Catalogue de compléments alimentaires</p>
-</header>
+<!-- Préchargeur -->
+<div id="preloader">
+  <svg class="preloader-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21c-4.5-1-8-5-8-10a8 8 0 0 1 8-8 8 8 0 0 1 8 8c0 5-3.5 9-8 10Z"/><path d="M12 21V9"/></svg>
+  <div class="preloader-bar"></div>
+  <span class="preloader-text">NutriCI</span>
+</div>
 
+<!-- Barre de progression de défilement -->
+<div id="scroll-progress"></div>
+
+<!-- ==========================================================================
+     HTML — NAVIGATION
+     ========================================================================== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#accueil" class="logo">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c-4.5-1-8-5-8-10a8 8 0 0 1 8-8 8 8 0 0 1 8 8c0 5-3.5 9-8 10Z"/><path d="M12 21V9"/><path d="M8 9c0-3 2-5 4-6"/></svg>
+      <strong>NutriCI</strong>
+    </a>
+
+    <button class="burger" id="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+
+    <nav class="links" id="nav-links">
+      <a href="#accueil">Accueil</a>
+      <a href="#produits">Produits</a>
+      <a href="#produits">Catégories</a>
+      <a href="#" id="nav-favoris">Favoris</a>
+      <a href="#" id="nav-commandes">Commandes</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="nav-favoris-btn" aria-label="Voir mes favoris" title="Favoris">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7.5-4.6-10-9.2C.4 8.4 2 4.8 5.6 4.1 8 3.6 10.3 4.8 12 7c1.7-2.2 4-3.4 6.4-2.9 3.6.7 5.2 4.3 3.6 7.7C19.5 16.4 12 21 12 21Z"/></svg>
+        <span class="badge" id="fav-count" style="display:none;">0</span>
+      </button>
+      <button class="icon-btn" id="nav-cart-btn" aria-label="Voir mon panier" title="Panier">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.3l2.3 12.4a2 2 0 0 0 2 1.6h8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+        <span class="badge" id="cart-count" style="display:none;">0</span>
+      </button>
+      <button class="btn btn-primary btn-sm" id="nav-login-btn">Connexion</button>
+    </div>
+  </div>
+</header>
 
 <main>
 
-    <h2>Nos produits</h2>
-
-    <div id="catalogue">
-        <p>Chargement du catalogue...</p>
+<!-- ==========================================================================
+     HERO
+     ========================================================================== -->
+<section id="accueil" class="hero">
+  <div class="hero-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text reveal">
+      <span class="eyebrow"><span class="dot"></span>Qualité contrôlée &middot; Côte d'Ivoire</span>
+      <h1>Le bien-être, une gélule à la fois.</h1>
+      <p class="lead">NutriCI sélectionne et livre des compléments alimentaires de qualité contrôlée : vitamines, protéines, plantes et minéraux, pensés pour votre équilibre au quotidien.</p>
+      <div class="hero-cta">
+        <a href="#produits" class="btn btn-primary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Découvrir les produits
+        </a>
+        <a href="#produits" class="btn btn-outline" id="voir-categories">Voir les catégories</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-item"><strong data-count-to="120" data-prefix="+">0</strong><span>Références en catalogue</span></div>
+        <div class="trust-item"><strong>24-48h</strong><span>Livraison à Abidjan</span></div>
+        <div class="trust-item"><strong data-count-to="100" data-suffix="%">0</strong><span>Paiement sécurisé</span></div>
+      </div>
     </div>
 
-
-    <!-- PANIER AJOUTÉ -->
-    <section id="panier-section">
-
-        <h2>Mon panier</h2>
-
-        <div id="panier">
-            Aucun produit dans le panier.
+    <div class="hero-visual reveal">
+      <div class="hero-media media">
+        <div class="media-fallback">
+          <svg class="icon" style="width:70px;height:70px;color:rgba(255,255,255,.65);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21c-4.5-1-8-5-8-10a8 8 0 0 1 8-8 8 8 0 0 1 8 8c0 5-3.5 9-8 10Z"/><path d="M12 21V9"/></svg>
         </div>
+        <img src="https://images.unsplash.com/photo-1584362917165-526a968579e8?auto=format&fit=crop&w=900&q=80" alt="Compléments alimentaires et vitamines NutriCI" loading="lazy" onerror="this.style.display='none'">
+      </div>
+      <div class="seal">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+        <span>Qualité contrôlée</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <p>
-            Total :
-            <strong id="total">0 FCFA</strong>
-        </p>
+<!-- ==========================================================================
+     AVANTAGES
+     ========================================================================== -->
+<section class="advantages" id="avantages">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pourquoi NutriCI</span>
+      <h2>Une exigence à chaque étape</h2>
+      <p>De la sélection des produits à la livraison, chaque détail est pensé pour votre tranquillité.</p>
+    </div>
+    <div class="adv-grid">
+      <div class="adv-card reveal-up" style="--delay:0s">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3>Qualité contrôlée</h3>
+        <p>Chaque référence est vérifiée avant sa mise en catalogue pour garantir sa conformité.</p>
+      </div>
+      <div class="adv-card reveal-up" style="--delay:.1s">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18.5" r="1.6"/><circle cx="17.5" cy="18.5" r="1.6"/></svg></div>
+        <h3>Livraison rapide</h3>
+        <p>Expédition sous 24 à 48h à Abidjan et dans les grandes villes de Côte d'Ivoire.</p>
+      </div>
+      <div class="adv-card reveal-up" style="--delay:.2s">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.4"/></svg></div>
+        <h3>Conseils nutritionnels</h3>
+        <p>Des repères simples pour choisir le complément adapté à vos besoins réels.</p>
+      </div>
+      <div class="adv-card reveal-up" style="--delay:.3s">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 6v6c0 5 3.5 8.5 8 9.9 4.5-1.4 8-4.9 8-9.9V6l-8-3Z"/></svg></div>
+        <h3>Paiement sécurisé</h3>
+        <p>Un tunnel de commande simple avec un paiement protégé de bout en bout.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ==========================================================================
+     CATALOGUE
+     ========================================================================== -->
+<section class="catalogue-section" id="produits">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Catalogue</span>
+      <h2>Nos produits</h2>
+      <p>Les données ci-dessous proviennent directement du serveur NutriCI.</p>
+    </div>
 
-        <h3>Informations client</h3>
+    <div class="filters reveal">
+      <div class="search-box">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" id="recherche" placeholder="Rechercher un produit ou une référence…" aria-label="Rechercher un produit">
+      </div>
+      <div class="filter-controls">
+        <div class="select-wrap">
+          <select id="filtre-categorie" aria-label="Filtrer par catégorie">
+            <option value="">Toutes les catégories</option>
+          </select>
+        </div>
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="filtre-dispo">
+          Disponibles uniquement
+        </label>
+      </div>
+    </div>
 
-        <input
-                id="client"
-                placeholder="Nom du client">
+    <div id="catalogue">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+  </div>
+</section>
 
+<!-- ==========================================================================
+     PROMOTIONS (contenu de démonstration)
+     ========================================================================== -->
+<section class="promos-section" id="promotions">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Offres du moment</span>
+      <h2>Promotions<span class="demo-tag">Démonstration</span></h2>
+      <p>Exemples d'offres illustratives pour la présentation du projet.</p>
+    </div>
+    <div class="promo-grid">
+      <div class="promo-card reveal-up" style="--delay:0s">
+        <span class="promo-ribbon">-15%</span>
+        <h3>Vitamines &amp; minéraux</h3>
+        <p>Sur toute la gamme immunité, jusqu'à la fin du mois.</p>
+      </div>
+      <div class="promo-card reveal-up" style="--delay:.12s">
+        <span class="promo-ribbon">Nouveauté</span>
+        <h3>Protéines végétales</h3>
+        <p>Découvrez notre nouvelle sélection à base de plantes.</p>
+      </div>
+      <div class="promo-card reveal-up" style="--delay:.24s">
+        <span class="promo-ribbon">Livraison offerte</span>
+        <h3>Dès 25 000 FCFA</h3>
+        <p>Sur l'ensemble des commandes livrées à Abidjan.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <input
-                id="telephone"
-                placeholder="Téléphone Mobile Money">
+<!-- ==========================================================================
+     CONSEILS NUTRITIONNELS (contenu de démonstration)
+     ========================================================================== -->
+<section class="tips-section" id="conseils">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Conseils</span>
+      <h2>Repères nutritionnels<span class="demo-tag">Démonstration</span></h2>
+      <p>Des repères généraux ; demandez toujours un avis professionnel pour un besoin particulier.</p>
+    </div>
+    <div class="tips-grid">
+      <div class="tip-card reveal">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h4>Régularité</h4>
+        <p>Prendre un complément à heure fixe favorise une meilleure assimilation.</p>
+      </div>
+      <div class="tip-card reveal">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-1-8-5-8-10a8 8 0 0 1 8-8 8 8 0 0 1 8 8c0 5-3.5 9-8 10Z"/></svg></div>
+        <h4>Origine naturelle</h4>
+        <p>Privilégiez les formules à base de plantes lorsque c'est possible.</p>
+      </div>
+      <div class="tip-card reveal">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+        <h4>Hydratation</h4>
+        <p>Beaucoup de compléments s'assimilent mieux avec un grand verre d'eau.</p>
+      </div>
+      <div class="tip-card reveal">
+        <div class="adv-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h4>Avis médical</h4>
+        <p>Demandez conseil à un professionnel de santé en cas de doute.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-
-        <br><br>
-
-
-        <button onclick="validerCommande()">
-            Commander
-        </button>
-
-
-        <pre id="resultat-commande"></pre>
-
-
-    </section>
-
+<!-- ==========================================================================
+     AVIS CLIENTS (contenu de démonstration)
+     ========================================================================== -->
+<section class="reviews-section" id="avis">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Avis</span>
+      <h2>Ce qu'en disent nos clients<span class="demo-tag">Démonstration</span></h2>
+      <p>Témoignages fictifs utilisés à titre d'illustration pour la présentation.</p>
+    </div>
+    <div class="reviews-carousel reveal">
+      <div class="reviews-track" id="reviews-track">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="quote">« Commande reçue rapidement, le produit correspondait exactement à la fiche. »</p>
+          <div class="review-author">
+            <div class="avatar">A</div>
+            <div><strong>Aïcha K.</strong><span>Cliente, Abidjan</span></div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="quote">« Le site est clair et je trouve facilement les informations sur chaque produit. »</p>
+          <div class="review-author">
+            <div class="avatar">M</div>
+            <div><strong>Moussa D.</strong><span>Client, Yamoussoukro</span></div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★☆</div>
+          <p class="quote">« Bon suivi de commande, j'aimerais juste plus de choix en protéines végétales. »</p>
+          <div class="review-author">
+            <div class="avatar">S</div>
+            <div><strong>Sarah T.</strong><span>Cliente, Bouaké</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="reviews-dots" id="reviews-dots"></div>
+    </div>
+  </div>
+</section>
 
 </main>
 
+<!-- ==========================================================================
+     FOOTER
+     ========================================================================== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom:14px;">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--gold-soft)" stroke-width="1.6"><path d="M12 21c-4.5-1-8-5-8-10a8 8 0 0 1 8-8 8 8 0 0 1 8 8c0 5-3.5 9-8 10Z"/><path d="M12 21V9"/></svg>
+          <strong style="font-family:'Fraunces',serif;font-size:1.2rem;">NutriCI</strong>
+        </div>
+        <p>Application de vente et de gestion de compléments alimentaires, réalisée dans le cadre d'un projet universitaire.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Facebook"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h3l1-3h-4V9c0-.6.4-1 1-1Z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a8 8 0 1 1-14.6-4.6L4 20l4.8-1.3A8 8 0 0 0 20 12Z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Liens rapides</h4>
+        <ul class="footer-links">
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#produits">Produits</a></li>
+          <li><a href="#promotions">Promotions</a></li>
+          <li><a href="#conseils">Conseils nutritionnels</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Compte</h4>
+        <ul class="footer-links">
+          <li><a href="#" id="footer-login">Connexion / Inscription</a></li>
+          <li><a href="#" id="footer-favoris">Mes favoris</a></li>
+          <li><a href="#" id="footer-commandes">Mes commandes</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact<span class="demo-tag">Démonstration</span></h4>
+        <ul class="footer-contact">
+          <li>📍 Cocody, Abidjan, Côte d'Ivoire</li>
+          <li>✉️ contact@nutrici-demo.ci</li>
+          <li>📞 +225 07 00 00 00 00</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="annee"></span> NutriCI — Projet universitaire de démonstration.</span>
+      <span>Fait avec HTML, CSS &amp; JavaScript natifs.</span>
+    </div>
+  </div>
+</footer>
 
+<!-- ==========================================================================
+     PANIER — panneau latéral
+     ========================================================================== -->
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="cart-drawer" aria-label="Panier">
+  <div class="drawer-head">
+    <h3>Mon panier</h3>
+    <button class="close-btn" id="cart-close" aria-label="Fermer le panier">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="cart-body"></div>
+  <div class="drawer-foot">
+    <div class="summary-row"><span>Sous-total</span><span class="mono" id="cart-subtotal">0 FCFA</span></div>
+    <div class="summary-row total"><span>Total</span><span class="mono" id="cart-total">0 FCFA</span></div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn btn-outline-dark btn-block" id="cart-clear">Vider</button>
+      <button class="btn btn-primary btn-block" id="cart-checkout">Valider la commande</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ==========================================================================
+     FAVORIS — panneau latéral
+     ========================================================================== -->
+<aside class="drawer" id="fav-drawer" aria-label="Favoris">
+  <div class="drawer-head">
+    <h3>Mes favoris</h3>
+    <button class="close-btn" id="fav-close" aria-label="Fermer les favoris">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="fav-body"></div>
+</aside>
+
+<!-- ==========================================================================
+     COMMANDES — panneau latéral
+     ========================================================================== -->
+<aside class="drawer" id="orders-drawer" aria-label="Mes commandes">
+  <div class="drawer-head">
+    <h3>Mes commandes</h3>
+    <button class="close-btn" id="orders-close" aria-label="Fermer mes commandes">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="orders-body"></div>
+</aside>
+
+<!-- ==========================================================================
+     MODALE — connexion / inscription
+     ========================================================================== -->
+<div class="modal-backdrop" id="login-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="modal-header">
+      <h3 id="login-title">Accès à mon compte</h3>
+      <button class="close-btn" id="login-close" aria-label="Fermer">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="connexion" type="button">Connexion</button>
+        <button class="tab-btn" data-tab="inscription" type="button">Inscription</button>
+      </div>
+
+      <form id="form-connexion">
+        <div class="form-group">
+          <label for="co-email">Adresse e-mail</label>
+          <input type="email" id="co-email" required placeholder="vous@exemple.com">
+        </div>
+        <div class="form-group">
+          <label for="co-pass">Mot de passe</label>
+          <input type="password" id="co-pass" required minlength="4" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+        <p class="form-hint">Connexion simulée à des fins de démonstration.</p>
+      </form>
+
+      <form id="form-inscription" style="display:none;">
+        <div class="form-group">
+          <label for="in-nom">Nom complet</label>
+          <input type="text" id="in-nom" required placeholder="Votre nom">
+        </div>
+        <div class="form-group">
+          <label for="in-email">Adresse e-mail</label>
+          <input type="email" id="in-email" required placeholder="vous@exemple.com">
+        </div>
+        <div class="form-group">
+          <label for="in-pass">Mot de passe</label>
+          <input type="password" id="in-pass" required minlength="4" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Créer mon compte</button>
+        <p class="form-hint">Inscription simulée à des fins de démonstration.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODALE — détails produit
+     ========================================================================== -->
+<div class="modal-backdrop" id="detail-backdrop">
+  <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div class="modal-header">
+      <h3 id="detail-title">Détail du produit</h3>
+      <button class="close-btn" id="detail-close" aria-label="Fermer">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="detail-body"></div>
+  </div>
+</div>
+
+<button id="back-to-top" aria-label="Retour en haut">
+  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<div id="confetti-layer"></div>
+
+<div id="toast-container"></div>
 
 <script>
+/* ==========================================================================
+   ÉTAT DE L'APPLICATION
+   ========================================================================== */
+let produits = [];           // rempli depuis l'API /api/produits
+let panier = [];             // lignes renvoyées par /api/panier
+let favoris = new Set();     // références de produits favoris
+let identifiantsFavoris = new Map(); // référence produit -> identifiant backend
+let commandes = [];          // historique renvoyé par /api/commandes
+let utilisateurCourant = JSON.parse(sessionStorage.getItem("nutriciUtilisateur") || "null");
 
+const imagesParDefaut = [
+  "https://images.unsplash.com/photo-1550572017-edd951aa8ca4?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80"
+];
 
-    async function chargerProduits() {
+const imagesParCategorie = {
+  "Vitamines": "https://images.unsplash.com/photo-1550572017-edd951aa8ca4?auto=format&fit=crop&w=600&q=80",
+  "Acides gras": "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2c?auto=format&fit=crop&w=600&q=80",
+  "Minéraux": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80",
+  "Protéines": "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=600&q=80",
+  "Plantes": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80",
+  "Digestion": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80",
+  "Énergie": "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=600&q=80",
+  "Sommeil": "https://images.unsplash.com/photo-1511295742362-92c96b1cf484?auto=format&fit=crop&w=600&q=80",
+  "Immunité": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
+  "Beauté": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=600&q=80"
+};
 
-        const catalogue =
-            document.getElementById("catalogue");
+function iconeLeaf(){
+  return '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21c-4.5-1-8-5-8-10a8 8 0 0 1 8-8 8 8 0 0 1 8 8c0 5-3.5 9-8 10Z"/><path d="M12 21V9"/></svg>';
+}
 
+/* ==========================================================================
+   CHARGEMENT DU CATALOGUE (appel API conservé et amélioré)
+   ========================================================================== */
+async function chargerProduits() {
+    const catalogue = document.getElementById("catalogue");
+    catalogue.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
 
-        try {
+    try {
+        const reponse = await fetch("/api/produits");
 
-            const reponse =
-                await fetch("/api/produits");
-
-
-            if(!reponse.ok){
-                throw new Error(
-                    "Erreur HTTP : " + reponse.status
-                );
-            }
-
-
-            const produits =
-                await reponse.json();
-
-
-
-            catalogue.innerHTML =
-            produits.map(produit => `
-
-                <article class="produit">
-
-                    <h2>${produit.nom}</h2>
-
-                    <p>
-                        Référence :
-                        ${produit.reference}
-                    </p>
-
-
-                    <p class="prix">
-                        ${produit.prixUnitaire
-                        .toLocaleString("fr-FR")}
-                        FCFA
-                    </p>
-
-
-                    <p>
-                        Stock disponible :
-                        ${produit.qteStock}
-                    </p>
-
-
-                    ${
-                        produit.stockBas
-                        ?
-                        '<p class="stock-bas">Stock faible</p>'
-                        :
-                        '<p>Produit disponible</p>'
-                    }
-
-
-                    <button
-                    onclick='ajouterAuPanier(${JSON.stringify(produit)})'>
-                        Ajouter au panier
-                    </button>
-
-
-                </article>
-
-
-            `).join("");
-
-
-
-        } catch(erreur){
-
-            catalogue.innerHTML =
-            `
-            <p class="erreur">
-            Impossible de charger le catalogue :
-            ${erreur.message}
-            </p>
-            `;
-
+        if (!reponse.ok) {
+            throw new Error("Erreur HTTP : " + reponse.status);
         }
 
-    }
+        produits = await reponse.json();
 
-
-
-
-
-    async function ajouterAuPanier(produit){
-
-
-        await fetch("/api/panier",{
-
-            method:"POST",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-
-            body:JSON.stringify({
-
-                reference:
-                produit.reference,
-
-                nom:
-                produit.nom,
-
-                prixUnitaire:
-                produit.prixUnitaire,
-
-                quantite:1
-
-            })
-
-        });
-
-
-        chargerPanier();
-
-    }
-
-
-
-
-
-    async function chargerPanier(){
-
-
-        const panier =
-        await fetch("/api/panier")
-        .then(r=>r.json());
-
-
-
-        const zone =
-        document.getElementById("panier");
-
-
-        if(panier.lignes.length===0){
-
-            zone.innerHTML =
-            "Aucun produit dans le panier.";
-
-        }
-        else{
-
-
-            zone.innerHTML =
-            panier.lignes.map(l=>`
-
-            <p>
-
-            ${l.nom}
-            x ${l.quantite}
-
-            =
-            ${l.sousTotal}
-            FCFA
-
-
-            <button
-            onclick="supprimerDuPanier('${l.reference}')">
-            Supprimer
-            </button>
-
-
-            </p>
-
-            `).join("");
-
-        }
-
-
-        document.getElementById("total")
-        .textContent =
-        panier.total + " FCFA";
-
-
-    }
-
-
-
-
-
-    async function supprimerDuPanier(reference){
-
-
-        await fetch(
-            "/api/panier/" + reference,
-            {
-                method:"DELETE"
-            }
-        );
-
-
-        chargerPanier();
-
-    }
-
-
-
-
-
-
-    async function validerCommande(){
-
-
-
-        const reponse =
-        await fetch("/api/commandes",{
-
-
-            method:"POST",
-
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-
-            body:JSON.stringify({
-
-                client:
-                document.getElementById("client").value,
-
-
-                telephone:
-                document.getElementById("telephone").value
-
-            })
-
-
-        });
-
-
-
-        if(!reponse.ok){
-
-            alert(
-            "Panier vide ou informations invalides"
-            );
-
+        if (!Array.isArray(produits) || produits.length === 0) {
+            catalogue.innerHTML = etatVideHTML("Aucun produit disponible", "Le catalogue ne contient aucun produit pour le moment.");
             return;
-
         }
 
-
-
-        const commande =
-        await reponse.json();
-
-
-
-        await fetch(
-        "/api/commandes/"
-        + commande.numero
-        + "/paiement",
-        {
-            method:"POST"
-        });
-
-
-
-        const bon =
-        await fetch(
-        "/api/commandes/"
-        + commande.numero
-        + "/bon-livraison"
-        )
-        .then(r=>r.text());
-
-
-
-        document.getElementById(
-        "resultat-commande"
-        )
-        .textContent = bon;
-
-
-
-        chargerPanier();
-
-
+        remplirFiltreCategories();
+        appliquerFiltresEtAfficher();
+        await chargerPanier();
+        await chargerCommandes();
+        await chargerFavoris();
+    } catch (erreur) {
+        catalogue.innerHTML = etatErreurHTML(erreur.message);
     }
+}
 
+function etatVideHTML(titre, texte){
+  return `<div class="state-msg">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <h3>${titre}</h3><p>${texte}</p>
+    </div>`;
+}
+function etatErreurHTML(message){
+  return `<div class="state-msg erreur">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <h3>Impossible de charger le catalogue</h3><p>${message}</p>
+    </div>`;
+}
 
+/* ==========================================================================
+   FILTRES : recherche, catégorie, disponibilité
+   ========================================================================== */
+function remplirFiltreCategories(){
+  const select = document.getElementById("filtre-categorie");
+  const categories = new Set();
+  produits.forEach(p => categories.add(p.categorie ? p.categorie : "Autres"));
+  select.innerHTML = '<option value="">Toutes les catégories</option>' +
+    Array.from(categories).sort().map(c => `<option value="${c}">${c}</option>`).join("");
+}
 
+function appliquerFiltresEtAfficher(){
+  const texte = document.getElementById("recherche").value.trim().toLowerCase();
+  const categorie = document.getElementById("filtre-categorie").value;
+  const dispoUniquement = document.getElementById("filtre-dispo").checked;
 
+  const filtres = produits.filter(p => {
+    const correspondTexte = !texte ||
+      (p.nom && p.nom.toLowerCase().includes(texte)) ||
+      (p.reference && String(p.reference).toLowerCase().includes(texte));
+    const correspondCategorie = !categorie || (p.categorie ? p.categorie : "Autres") === categorie;
+    const correspondDispo = !dispoUniquement || p.qteStock > 0;
+    return correspondTexte && correspondCategorie && correspondDispo;
+  });
 
+  afficherCatalogue(filtres);
+}
 
-    chargerProduits();
+function afficherCatalogue(liste){
+  const catalogue = document.getElementById("catalogue");
 
-    chargerPanier();
+  if (liste.length === 0) {
+    catalogue.innerHTML = etatVideHTML("Aucun résultat", "Aucun produit ne correspond à votre recherche ou à vos filtres.");
+    return;
+  }
 
+  catalogue.innerHTML = liste.map((produit, index) => carteProduitHTML(produit, index)).join("");
+  activerCascadeCartes();
+  activerEffetTilt();
+}
 
+/* cascade d'apparition des cartes produits */
+function activerCascadeCartes(){
+  const cartes = document.querySelectorAll("#catalogue .produit");
+  cartes.forEach((carte, i) => {
+    carte.style.opacity = "0";
+    carte.style.transform = "translateY(18px)";
+    setTimeout(() => {
+      carte.style.transition = "opacity .5s ease, transform .5s ease";
+      carte.style.opacity = "1";
+      carte.style.transform = "translateY(0)";
+    }, i * 55);
+  });
+}
 
+/* effet tilt 3D léger au survol des cartes produits */
+function activerEffetTilt(){
+  document.querySelectorAll("#catalogue .produit").forEach(carte => {
+    carte.addEventListener("mousemove", (e) => {
+      const rect = carte.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      carte.style.transform = `translateY(-5px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 8).toFixed(2)}deg)`;
+    });
+    carte.addEventListener("mouseleave", () => {
+      carte.style.transform = "translateY(0) rotateX(0) rotateY(0)";
+    });
+  });
+}
+
+function imagePourProduit(produit, index){
+  return produit.image
+    ? produit.image
+    : (imagesParCategorie[produit.categorie] || imagesParDefaut[index % imagesParDefaut.length]);
+}
+
+function carteProduitHTML(produit, index){
+  const enFavori = favoris.has(String(produit.reference));
+  const image = imagePourProduit(produit, index);
+  const enRupture = produit.qteStock <= 0;
+
+  let pastilleStock;
+  if (enRupture) {
+    pastilleStock = '<span class="stock-pill rupture">Rupture de stock</span>';
+  } else if (produit.stockBas) {
+    pastilleStock = '<span class="stock-pill bas">Stock faible</span>';
+  } else {
+    pastilleStock = '<span class="stock-pill ok">Disponible</span>';
+  }
+
+  return `
+    <article class="produit" data-ref="${produit.reference}">
+      <div class="produit-media-wrap">
+        <button class="produit-fav ${enFavori ? 'active' : ''}" onclick="basculerFavori('${produit.reference}', event)" aria-label="Ajouter aux favoris">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="${enFavori ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7.5-4.6-10-9.2C.4 8.4 2 4.8 5.6 4.1 8 3.6 10.3 4.8 12 7c1.7-2.2 4-3.4 6.4-2.9 3.6.7 5.2 4.3 3.6 7.7C19.5 16.4 12 21 12 21Z"/></svg>
+        </button>
+        <span class="produit-cat">${produit.categorie ? produit.categorie : "Autres"}</span>
+        <div class="media">
+          <div class="media-fallback">${iconeLeaf()}</div>
+          <img src="${image}" alt="${produit.nom}" loading="lazy" onerror="this.style.display='none'">
+        </div>
+      </div>
+      <div class="produit-body">
+        <h3>${produit.nom}</h3>
+        <p class="produit-ref mono">Réf. ${produit.reference}</p>
+        <p class="produit-prix">${Number(produit.prixUnitaire).toLocaleString("fr-FR")} FCFA</p>
+        <div class="stock-row">
+          ${pastilleStock}
+          <span class="mono" style="color:var(--ink-soft);font-size:.78rem;">Stock : ${produit.qteStock}</span>
+        </div>
+        <div class="produit-actions">
+          <button class="btn btn-emerald btn-sm" ${enRupture ? 'disabled' : ''} onclick="ajouterAuPanier('${produit.reference}', event)">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3h2.3l2.3 12.4a2 2 0 0 0 2 1.6h8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+            Ajouter
+          </button>
+          <button class="btn btn-outline-dark btn-sm btn-icon-only" onclick="ouvrirDetail('${produit.reference}')" aria-label="Voir les détails">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function trouverProduit(reference){
+  return produits.find(p => String(p.reference) === String(reference));
+}
+
+/* ==========================================================================
+   FAVORIS
+   ========================================================================== */
+function nomUtilisateurFavoris(){
+  return utilisateurCourant?.email || "visiteur";
+}
+
+async function chargerFavoris(){
+  try {
+    const utilisateur = encodeURIComponent(nomUtilisateurFavoris());
+    const reponse = await fetch(`/api/favoris/utilisateur/${utilisateur}`);
+    if (!reponse.ok) throw new Error("Impossible de charger les favoris");
+    const donnees = await reponse.json();
+    favoris = new Set(donnees.map(f => String(f.referenceProduit)));
+    identifiantsFavoris = new Map(
+      donnees.map(f => [String(f.referenceProduit), String(f.id)])
+    );
+    mettreAJourFavorisUI();
+    if (produits.length > 0) appliquerFiltresEtAfficher();
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+}
+
+async function basculerFavori(reference, evenement){
+  const ref = String(reference);
+  const estFavori = favoris.has(ref);
+  try {
+    if (estFavori) {
+      const id = identifiantsFavoris.get(ref);
+      if (!id) throw new Error("Favori introuvable");
+      const reponse = await fetch(`/api/favoris/${encodeURIComponent(id)}`, {
+        method: "DELETE"
+      });
+      if (!reponse.ok) throw new Error("Suppression du favori impossible");
+      favoris.delete(ref);
+      identifiantsFavoris.delete(ref);
+      afficherToast("Retiré des favoris", "info");
+    } else {
+      const reponse = await fetch("/api/favoris", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          utilisateur: nomUtilisateurFavoris(),
+          referenceProduit: ref
+        })
+      });
+      if (!reponse.ok) throw new Error("Ajout du favori impossible");
+      const favori = await reponse.json();
+      favoris.add(ref);
+      identifiantsFavoris.set(ref, String(favori.id));
+      afficherToast("Ajouté aux favoris", "coeur");
+    }
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+    return;
+  }
+
+  if (evenement && evenement.currentTarget) {
+    const bouton = evenement.currentTarget;
+    bouton.classList.toggle("active", !estFavori);
+    bouton.querySelector("svg").setAttribute("fill", !estFavori ? "currentColor" : "none");
+    bouton.classList.add("pulse");
+    setTimeout(() => bouton.classList.remove("pulse"), 400);
+  }
+  mettreAJourFavorisUI();
+}
+
+function mettreAJourFavorisUI(){
+  const compteur = document.getElementById("fav-count");
+  compteur.textContent = favoris.size;
+  compteur.style.display = favoris.size > 0 ? "flex" : "none";
+
+  const corps = document.getElementById("fav-body");
+  if (favoris.size === 0) {
+    corps.innerHTML = etatVideHTML("Aucun favori", "Cliquez sur le cœur d'un produit pour l'ajouter ici.");
+    return;
+  }
+  corps.innerHTML = Array.from(favoris).map(ref => {
+    const p = trouverProduit(ref);
+    if (!p) return "";
+    return `<div class="cart-item">
+      <div class="media"><div class="media-fallback">${iconeLeaf()}</div>
+        <img src="${imagePourProduit(p, 0)}" alt="${p.nom}" onerror="this.style.display='none'"></div>
+      <div class="cart-item-info">
+        <h4>${p.nom}</h4>
+        <p class="mono">${Number(p.prixUnitaire).toLocaleString("fr-FR")} FCFA</p>
+        <button class="remove-link" onclick="basculerFavori('${ref}')">Retirer</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ==========================================================================
+   PANIER
+   ========================================================================== */
+async function chargerPanier(){
+  try {
+    const reponse = await fetch("/api/panier");
+    if (!reponse.ok) throw new Error("Impossible de charger le panier");
+    const donnees = await reponse.json();
+    panier = Array.isArray(donnees.lignes) ? donnees.lignes : [];
+    mettreAJourPanierUI();
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+}
+
+async function ajouterAuPanier(reference, evenement){
+  const produit = trouverProduit(reference);
+  if (!produit || produit.qteStock <= 0) return;
+
+  try {
+    const reponse = await fetch("/api/panier", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        reference: produit.reference,
+        nom: produit.nom,
+        prixUnitaire: produit.prixUnitaire,
+        quantite: 1
+      })
+    });
+    if (!reponse.ok) throw new Error("Ajout au panier impossible");
+    const donnees = await reponse.json();
+    panier = Array.isArray(donnees.lignes) ? donnees.lignes : [];
+    afficherToast(`${produit.nom} ajouté au panier`, "panier");
+    mettreAJourPanierUI();
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+    return;
+  }
+
+  if (evenement) {
+    animerVolVersPanier(evenement.currentTarget);
+    const bouton = evenement.currentTarget;
+    bouton.classList.add("added");
+    setTimeout(() => bouton.classList.remove("added"), 350);
+  }
+}
+
+/* petite animation : l'image du produit "vole" jusqu'à l'icône panier */
+function animerVolVersPanier(bouton){
+  const carte = bouton.closest(".produit");
+  const cible = document.getElementById("nav-cart-btn");
+  if (!carte || !cible) return;
+  const image = carte.querySelector(".media img");
+  const depart = carte.querySelector(".media").getBoundingClientRect();
+  const arrivee = cible.getBoundingClientRect();
+
+  const clone = document.createElement("div");
+  clone.className = "fly-icon";
+  clone.style.left = depart.left + "px";
+  clone.style.top = depart.top + "px";
+  clone.style.width = depart.width + "px";
+  clone.style.height = depart.height + "px";
+  clone.style.opacity = "1";
+  if (image && image.style.display !== "none" && image.src) {
+    const img = document.createElement("img");
+    img.src = image.src;
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    clone.appendChild(img);
+  } else {
+    clone.style.background = "var(--emerald)";
+  }
+  document.body.appendChild(clone);
+
+  requestAnimationFrame(() => {
+    clone.style.transform = `translate(${arrivee.left - depart.left + arrivee.width/2 - depart.width/2}px, ${arrivee.top - depart.top + arrivee.height/2 - depart.height/2}px) scale(.1)`;
+    clone.style.width = "18px";
+    clone.style.height = "18px";
+    clone.style.opacity = "0.3";
+  });
+
+  setTimeout(() => clone.remove(), 750);
+}
+
+async function changerQuantite(reference, delta){
+  const ligne = panier.find(l => l.reference === reference);
+  const produit = trouverProduit(reference);
+  if (!ligne) return;
+  let nouvelleQuantite = ligne.quantite + delta;
+  if (produit && nouvelleQuantite > produit.qteStock) nouvelleQuantite = produit.qteStock;
+  if (nouvelleQuantite <= 0) return retirerDuPanier(reference);
+  try {
+    const reponse = await fetch(`/api/panier/${encodeURIComponent(reference)}`, {
+      method: "PUT",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({quantite: nouvelleQuantite})
+    });
+    if (!reponse.ok) throw new Error("Modification de quantité impossible");
+    const donnees = await reponse.json();
+    panier = Array.isArray(donnees.lignes) ? donnees.lignes : [];
+    mettreAJourPanierUI();
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+}
+
+async function retirerDuPanier(reference){
+  try {
+    const reponse = await fetch(`/api/panier/${encodeURIComponent(reference)}`, {method: "DELETE"});
+    if (!reponse.ok) throw new Error("Suppression impossible");
+    await chargerPanier();
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+}
+
+async function viderPanier(){
+  try {
+    const reponse = await fetch("/api/panier", {method: "DELETE"});
+    if (!reponse.ok) throw new Error("Impossible de vider le panier");
+    panier = [];
+    mettreAJourPanierUI();
+    afficherToast("Panier vidé", "info");
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+}
+
+function calculerTotalPanier(){
+  return panier.reduce((somme, ligne) => {
+    const produit = trouverProduit(ligne.reference);
+    return somme + (produit ? produit.prixUnitaire * ligne.quantite : 0);
+  }, 0);
+}
+
+function mettreAJourPanierUI(){
+  const compteur = document.getElementById("cart-count");
+  const nbArticles = panier.reduce((n, l) => n + l.quantite, 0);
+  compteur.textContent = nbArticles;
+  compteur.style.display = nbArticles > 0 ? "flex" : "none";
+
+  const corps = document.getElementById("cart-body");
+  if (panier.length === 0) {
+    corps.innerHTML = etatVideHTML("Panier vide", "Ajoutez des produits depuis le catalogue pour commencer.");
+  } else {
+    corps.innerHTML = panier.map(ligne => {
+      const p = trouverProduit(ligne.reference);
+      if (!p) return "";
+      return `<div class="cart-item">
+        <div class="media"><div class="media-fallback">${iconeLeaf()}</div>
+          <img src="${imagePourProduit(p, 0)}" alt="${p.nom}" onerror="this.style.display='none'"></div>
+        <div class="cart-item-info">
+          <h4>${p.nom}</h4>
+          <p class="mono">${Number(p.prixUnitaire).toLocaleString("fr-FR")} FCFA</p>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="changerQuantite('${ligne.reference}', -1)" aria-label="Diminuer">−</button>
+            <span class="qty-val">${ligne.quantite}</span>
+            <button class="qty-btn" onclick="changerQuantite('${ligne.reference}', 1)" aria-label="Augmenter">+</button>
+            <button class="remove-link" onclick="retirerDuPanier('${ligne.reference}')">Supprimer</button>
+          </div>
+        </div>
+        <div class="cart-item-price mono">${Number(p.prixUnitaire * ligne.quantite).toLocaleString("fr-FR")}</div>
+      </div>`;
+    }).join("");
+  }
+
+  const total = calculerTotalPanier();
+  document.getElementById("cart-subtotal").textContent = total.toLocaleString("fr-FR") + " FCFA";
+  document.getElementById("cart-total").textContent = total.toLocaleString("fr-FR") + " FCFA";
+}
+
+async function validerCommande(){
+  if (panier.length === 0) {
+    afficherToast("Votre panier est vide", "alerte");
+    return;
+  }
+  const client = prompt("Nom du client :", utilisateurCourant?.nom || "");
+  if (!client) return;
+  const telephone = prompt("Numéro de téléphone :", utilisateurCourant?.telephone || "");
+  if (!telephone) return;
+
+  try {
+    const reponse = await fetch("/api/commandes", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({client, telephone})
+    });
+    if (!reponse.ok) throw new Error("Validation de la commande impossible");
+    panier = [];
+    await chargerPanier();
+    await chargerCommandes();
+    fermerTout();
+    afficherToast("Commande validée avec succès", "succes");
+    lancerConfettis();
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+}
+
+async function chargerCommandes(){
+  try {
+    const reponse = await fetch("/api/commandes");
+    if (!reponse.ok) throw new Error("Impossible de charger les commandes");
+    commandes = await reponse.json();
+    if (!Array.isArray(commandes)) commandes = [];
+    mettreAJourCommandesUI();
+  } catch (erreur) {
+    commandes = [];
+    mettreAJourCommandesUI();
+  }
+}
+
+function mettreAJourCommandesUI(){
+  const corps = document.getElementById("orders-body");
+  if (commandes.length === 0) {
+    corps.innerHTML = etatVideHTML("Aucune commande", "Vos commandes validées apparaîtront ici.");
+    return;
+  }
+  corps.innerHTML = commandes.map(c => `
+    <div class="order-card">
+      <div class="order-card-head"><strong class="mono">${c.numero}</strong><span>${new Date(c.date).toLocaleString("fr-FR")}</span></div>
+      <p style="font-size:.85rem;color:var(--ink-soft);margin:0 0 6px;">${c.lignes.length} article(s)</p>
+      <p class="mono" style="font-weight:700;color:var(--forest);margin:0;">${Number(c.total).toLocaleString("fr-FR")} FCFA · ${c.statutPaiement}</p>
+    </div>
+  `).join("");
+}
+
+/* ==========================================================================
+   DÉTAIL PRODUIT
+   ========================================================================== */
+function ouvrirDetail(reference){
+  const p = trouverProduit(reference);
+  if (!p) return;
+  document.getElementById("detail-title").textContent = p.nom;
+  document.getElementById("detail-body").innerHTML = `
+    <div class="product-detail">
+      <div class="media"><div class="media-fallback">${iconeLeaf()}</div>
+        <img src="${imagePourProduit(p, 0)}" alt="${p.nom}" onerror="this.style.display='none'"></div>
+      <div>
+        <p class="mono" style="color:var(--ink-soft);">Réf. ${p.reference} · ${p.categorie ? p.categorie : "Autres"}</p>
+        <p class="produit-prix" style="font-size:1.6rem;">${Number(p.prixUnitaire).toLocaleString("fr-FR")} FCFA</p>
+        <p style="color:var(--ink-soft);">Produit du catalogue NutriCI. Vérifiez le stock disponible avant validation de votre commande.</p>
+        <p><strong>Stock disponible :</strong> ${p.qteStock} ${p.stockBas ? '<span class="stock-pill bas">Stock faible</span>' : ''}</p>
+        <button class="btn btn-emerald btn-block" ${p.qteStock <= 0 ? 'disabled' : ''} onclick="ajouterAuPanier('${p.reference}'); fermerModales();">Ajouter au panier</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("detail-backdrop").classList.add("open");
+}
+
+/* ==========================================================================
+   PANNEAUX / MODALES : ouverture, fermeture
+   ========================================================================== */
+const overlay = document.getElementById("overlay");
+
+function ouvrirPanneau(id){
+  fermerTout();
+  document.getElementById(id).classList.add("open");
+  overlay.classList.add("open");
+}
+function fermerTout(){
+  document.querySelectorAll(".drawer").forEach(d => d.classList.remove("open"));
+  overlay.classList.remove("open");
+}
+function fermerModales(){
+  document.querySelectorAll(".modal-backdrop").forEach(m => m.classList.remove("open"));
+}
+
+overlay.addEventListener("click", fermerTout);
+document.getElementById("nav-cart-btn").addEventListener("click", () => ouvrirPanneau("cart-drawer"));
+document.getElementById("cart-close").addEventListener("click", fermerTout);
+document.getElementById("nav-favoris-btn").addEventListener("click", () => ouvrirPanneau("fav-drawer"));
+document.getElementById("nav-favoris").addEventListener("click", e => { e.preventDefault(); ouvrirPanneau("fav-drawer"); });
+document.getElementById("footer-favoris").addEventListener("click", e => { e.preventDefault(); ouvrirPanneau("fav-drawer"); });
+document.getElementById("fav-close").addEventListener("click", fermerTout);
+document.getElementById("nav-commandes").addEventListener("click", e => { e.preventDefault(); ouvrirPanneau("orders-drawer"); });
+document.getElementById("footer-commandes").addEventListener("click", e => { e.preventDefault(); ouvrirPanneau("orders-drawer"); });
+document.getElementById("orders-close").addEventListener("click", fermerTout);
+document.getElementById("cart-clear").addEventListener("click", viderPanier);
+document.getElementById("cart-checkout").addEventListener("click", validerCommande);
+
+document.getElementById("nav-login-btn").addEventListener("click", () => document.getElementById("login-backdrop").classList.add("open"));
+document.getElementById("footer-login").addEventListener("click", e => { e.preventDefault(); document.getElementById("login-backdrop").classList.add("open"); });
+document.getElementById("login-close").addEventListener("click", fermerModales);
+document.getElementById("detail-close").addEventListener("click", fermerModales);
+[document.getElementById("login-backdrop"), document.getElementById("detail-backdrop")].forEach(m => {
+  m.addEventListener("click", e => { if (e.target === m) fermerModales(); });
+});
+
+/* onglets connexion / inscription */
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const cible = btn.dataset.tab;
+    document.getElementById("form-connexion").style.display = cible === "connexion" ? "block" : "none";
+    document.getElementById("form-inscription").style.display = cible === "inscription" ? "block" : "none";
+  });
+});
+
+document.getElementById("form-connexion").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const email = document.getElementById("co-email").value;
+  const motDePasse = document.getElementById("co-pass").value;
+  try {
+    const reponse = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, motDePasse})
+    });
+    const donnees = await reponse.json();
+    if (!reponse.ok) throw new Error("Email ou mot de passe incorrect");
+    utilisateurCourant = {
+      nom: email.split("@")[0],
+      email,
+      token: donnees.token,
+      role: donnees.role
+    };
+    sessionStorage.setItem("nutriciUtilisateur", JSON.stringify(utilisateurCourant));
+    document.getElementById("nav-login-btn").textContent = utilisateurCourant.nom;
+    await chargerFavoris();
+    fermerModales();
+    afficherToast(
+      "Connexion " + donnees.role + " réussie, bienvenue " + utilisateurCourant.nom,
+      "succes"
+    );
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+});
+
+document.getElementById("form-inscription").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const nom = document.getElementById("in-nom").value;
+  const email = document.getElementById("in-email").value;
+  const motDePasse = document.getElementById("in-pass").value;
+  try {
+    const reponse = await fetch("/api/utilisateurs", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({nom, email, telephone: "", motDePasse, role: "CLIENT"})
+    });
+    if (!reponse.ok) throw new Error("Création du compte impossible");
+    utilisateurCourant = await reponse.json();
+    sessionStorage.setItem("nutriciUtilisateur", JSON.stringify(utilisateurCourant));
+    document.getElementById("nav-login-btn").textContent = nom.split(" ")[0];
+    await chargerFavoris();
+    fermerModales();
+    afficherToast("Compte créé, bienvenue " + nom, "succes");
+  } catch (erreur) {
+    afficherToast(erreur.message, "alerte");
+  }
+});
+
+/* menu mobile */
+const burger = document.getElementById("burger-btn");
+const navLinks = document.getElementById("nav-links");
+burger.addEventListener("click", () => {
+  const ouvert = navLinks.classList.toggle("open");
+  burger.setAttribute("aria-expanded", ouvert);
+});
+navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", () => navLinks.classList.remove("open")));
+
+/* ==========================================================================
+   TOASTS
+   ========================================================================== */
+const icones = {
+  succes:'<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>',
+  panier:'<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3h2.3l2.3 12.4a2 2 0 0 0 2 1.6h8a2 2 0 0 0 2-1.6L21 7H6"/></svg>',
+  coeur:'<svg class="icon icon-sm" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M12 21s-7.5-4.6-10-9.2C.4 8.4 2 4.8 5.6 4.1 8 3.6 10.3 4.8 12 7c1.7-2.2 4-3.4 6.4-2.9 3.6.7 5.2 4.3 3.6 7.7C19.5 16.4 12 21 12 21Z"/></svg>',
+  alerte:'<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
+  info:'<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>'
+};
+function afficherToast(message, type){
+  const conteneur = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerHTML = (icones[type] || icones.info) + `<span>${message}</span>`;
+  conteneur.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+/* ==========================================================================
+   ÉCOUTEURS FILTRES + INITIALISATION
+   ========================================================================== */
+document.getElementById("recherche").addEventListener("input", appliquerFiltresEtAfficher);
+document.getElementById("filtre-categorie").addEventListener("change", appliquerFiltresEtAfficher);
+document.getElementById("filtre-dispo").addEventListener("change", appliquerFiltresEtAfficher);
+
+document.getElementById("annee").textContent = new Date().getFullYear();
+if (utilisateurCourant) {
+  document.getElementById("nav-login-btn").textContent =
+    (utilisateurCourant.nom || utilisateurCourant.email || "Compte").split(" ")[0];
+}
+
+/* apparitions progressives au défilement */
+const observateur = new IntersectionObserver((entrees) => {
+  entrees.forEach(entree => {
+    if (entree.isIntersecting) {
+      entree.target.classList.add("visible");
+      observateur.unobserve(entree.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll(".reveal").forEach(el => observateur.observe(el));
+
+mettreAJourPanierUI();
+mettreAJourFavorisUI();
+mettreAJourCommandesUI();
+chargerProduits();
+
+/* ==========================================================================
+   PRÉCHARGEUR
+   ========================================================================== */
+window.addEventListener("load", () => {
+  const preloader = document.getElementById("preloader");
+  setTimeout(() => preloader.classList.add("hidden"), 400);
+});
+
+/* ==========================================================================
+   BARRE DE PROGRESSION + NAVBAR DYNAMIQUE + BOUTON RETOUR EN HAUT
+   ========================================================================== */
+const barreProgression = document.getElementById("scroll-progress");
+const navbar = document.querySelector("header.nav");
+const boutonHaut = document.getElementById("back-to-top");
+
+window.addEventListener("scroll", () => {
+  const hauteurTotale = document.documentElement.scrollHeight - window.innerHeight;
+  const progression = hauteurTotale > 0 ? (window.scrollY / hauteurTotale) * 100 : 0;
+  barreProgression.style.width = progression + "%";
+
+  navbar.classList.toggle("scrolled", window.scrollY > 40);
+  boutonHaut.classList.toggle("show", window.scrollY > 500);
+}, { passive: true });
+
+boutonHaut.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+/* ==========================================================================
+   LIEN DE NAVIGATION ACTIF SELON LA SECTION VISIBLE
+   ========================================================================== */
+const sectionsNav = document.querySelectorAll("main > section[id]");
+const liensNav = document.querySelectorAll("nav.links a[href^='#']");
+const observateurNav = new IntersectionObserver((entrees) => {
+  entrees.forEach(entree => {
+    if (entree.isIntersecting) {
+      liensNav.forEach(lien => {
+        lien.classList.toggle("active", lien.getAttribute("href") === "#" + entree.target.id);
+      });
+    }
+  });
+}, { rootMargin: "-40% 0px -55% 0px" });
+sectionsNav.forEach(section => observateurNav.observe(section));
+
+/* ==========================================================================
+   COMPTEURS ANIMÉS DES STATISTIQUES DU HERO
+   ========================================================================== */
+function lancerCompteur(element){
+  const cible = parseInt(element.dataset.countTo, 10);
+  const prefixe = element.dataset.prefix || "";
+  const suffixe = element.dataset.suffix || "";
+  const duree = 1400;
+  const depart = performance.now();
+  function etape(maintenant){
+    const progres = Math.min((maintenant - depart) / duree, 1);
+    const valeur = Math.floor(progres * cible);
+    element.textContent = prefixe + valeur + suffixe;
+    if (progres < 1) requestAnimationFrame(etape);
+  }
+  requestAnimationFrame(etape);
+}
+const observateurCompteurs = new IntersectionObserver((entrees) => {
+  entrees.forEach(entree => {
+    if (entree.isIntersecting) {
+      lancerCompteur(entree.target);
+      observateurCompteurs.unobserve(entree.target);
+    }
+  });
+}, { threshold: 0.6 });
+document.querySelectorAll("[data-count-to]").forEach(el => observateurCompteurs.observe(el));
+
+/* ==========================================================================
+   CASCADE DES BLOCS reveal-up
+   ========================================================================== */
+const observateurCascade = new IntersectionObserver((entrees) => {
+  entrees.forEach(entree => {
+    if (entree.isIntersecting) {
+      entree.target.classList.add("visible");
+      observateurCascade.unobserve(entree.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll(".reveal-up").forEach(el => observateurCascade.observe(el));
+
+/* ==========================================================================
+   CARROUSEL D'AVIS CLIENTS (défilement automatique)
+   ========================================================================== */
+const pisteAvis = document.getElementById("reviews-track");
+const pointsAvis = document.getElementById("reviews-dots");
+const cartesAvis = pisteAvis ? pisteAvis.children.length : 0;
+let indexAvisCourant = 0;
+let minuteurAvis = null;
+
+if (pisteAvis && cartesAvis > 0) {
+  for (let i = 0; i < cartesAvis; i++) {
+    const point = document.createElement("button");
+    point.setAttribute("aria-label", "Avis " + (i + 1));
+    if (i === 0) point.classList.add("active");
+    point.addEventListener("click", () => allerAAvis(i));
+    pointsAvis.appendChild(point);
+  }
+
+  function allerAAvis(index){
+    indexAvisCourant = (index + cartesAvis) % cartesAvis;
+    pisteAvis.style.transform = `translateX(-${indexAvisCourant * 100}%)`;
+    Array.from(pointsAvis.children).forEach((pt, i) => pt.classList.toggle("active", i === indexAvisCourant));
+  }
+
+  function demarrerDefilementAvis(){
+    minuteurAvis = setInterval(() => allerAAvis(indexAvisCourant + 1), 5000);
+  }
+  function arreterDefilementAvis(){
+    clearInterval(minuteurAvis);
+  }
+
+  demarrerDefilementAvis();
+  const carrousel = document.querySelector(".reviews-carousel");
+  carrousel.addEventListener("mouseenter", arreterDefilementAvis);
+  carrousel.addEventListener("mouseleave", demarrerDefilementAvis);
+}
+
+/* ==========================================================================
+   CONFETTIS DE CONFIRMATION DE COMMANDE
+   ========================================================================== */
+function lancerConfettis(){
+  const couche = document.getElementById("confetti-layer");
+  const couleurs = ["#C9A227", "#12864F", "#FAF7EF", "#1FA968", "#E7CD7A"];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.width = 6 + Math.random() * 6 + "px";
+    piece.style.height = 8 + Math.random() * 10 + "px";
+    piece.style.background = couleurs[Math.floor(Math.random() * couleurs.length)];
+    piece.style.animationDuration = (2 + Math.random() * 1.5) + "s";
+    piece.style.animationDelay = (Math.random() * 0.3) + "s";
+    couche.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
 </script>
-
-
 </body>
 </html>
